@@ -1,5 +1,5 @@
 import { IProcessStatus } from "@/hooks/useProcessPack"
-import { FC, FormEvent, createRef, useState } from "react"
+import { FC, FormEvent, createRef, useEffect, useState } from "react"
 import {
   Button,
   Form,
@@ -39,9 +39,16 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
       return
     }
 
-    // setPackLoading(true)
+    setPackLoading(true)
     handleLoadPack(file)
   }
+
+  // dialog 숨길 때 로딩중 상태 해제 (버튼 입력 다시 가능해짐)
+  useEffect(() => {
+    if (!show) {
+      setPackLoading(false)
+    }
+  }, [show])
 
   return (
     <Modal
@@ -76,7 +83,12 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
           <Button type="submit" disabled={packLoading}>
             Load
           </Button>
-          <Button type="button" variant="secondary" onClick={handleClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handleClose}
+            disabled={packLoading}
+          >
             Cancel
           </Button>
         </ModalFooter>

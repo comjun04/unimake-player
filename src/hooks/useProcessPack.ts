@@ -142,6 +142,13 @@ const useProcessPack = () => {
   })
   const [processing, setProcessing] = useState(false)
 
+  const clear = () => {
+    setStatus({
+      step: 0,
+      state: "not_running",
+    })
+  }
+
   const processPack: (file: File) => Promise<IPackData | undefined> = async (
     file
   ) => {
@@ -245,7 +252,7 @@ const useProcessPack = () => {
     }
   }
 
-  return { processPack, status, processing }
+  return { processPack, status, clear }
 }
 
 export default useProcessPack
