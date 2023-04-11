@@ -30,7 +30,10 @@ const App: FC = () => {
   return (
     <>
       <Container>
-        <PackInfo onLoadPackClick={() => setShowPackLoadModal(true)} />
+        <PackInfo
+          onLoadPackClick={() => setShowPackLoadModal(true)}
+          infoData={packData?.info ?? {}}
+        />
         <Pad />
       </Container>
       <PackLoadModal
