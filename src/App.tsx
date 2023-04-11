@@ -3,11 +3,11 @@ import { Container } from "react-bootstrap"
 import PackInfo from "@/components/PackInfo"
 import Pad from "@/components/Pad"
 import PackLoadModal from "./components/PackLoadModal"
+import useProcessPack from "./hooks/useProcessPack"
 
 const App: FC = () => {
   const [showPackLoadModal, setShowPackLoadModal] = useState(false)
-
-  const togglePackLoadModal = () => setShowPackLoadModal(!showPackLoadModal)
+  const { processPack } = useProcessPack()
 
   return (
     <>
@@ -18,6 +18,7 @@ const App: FC = () => {
       <PackLoadModal
         show={showPackLoadModal}
         handleClose={() => setShowPackLoadModal(false)}
+        handleLoadPack={(file) => processPack(file)}
       />
     </>
   )
