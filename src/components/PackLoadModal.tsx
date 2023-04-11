@@ -1,3 +1,4 @@
+import { IProcessStatus } from "@/hooks/useProcessPack"
 import { FC, FormEvent, createRef, useState } from "react"
 import {
   Button,
@@ -16,12 +17,14 @@ type PackLoadModalProps = {
   show: boolean
   handleClose?: () => void
   handleLoadPack: (file: File) => void
+  packLoadStatus: IProcessStatus
 }
 
 const PackLoadModal: FC<PackLoadModalProps> = ({
   show,
   handleClose,
   handleLoadPack,
+  packLoadStatus,
 }) => {
   const [packLoading, setPackLoading] = useState(false)
   const fileInputRef = createRef<HTMLInputElement>()
@@ -36,7 +39,7 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
       return
     }
 
-    setPackLoading(true)
+    // setPackLoading(true)
     handleLoadPack(file)
   }
 
@@ -58,9 +61,15 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
                 ref={fileInputRef}
               />
             </FormGroup>
-            <div>Waiting for pack file...</div>
-            <ProgressBar now={50} variant="success" label="Step 1/7" />
-            <ProgressBar now={40} />
+            <div>
+              step {packLoadStatus.step}. {packLoadStatus.state}
+            </div>
+            <ProgressBar now={packLoadStatus.step} max={10} variant="success" />
+            <ProgressBar
+              now={packLoadStatus.partCurrent ?? 100}
+              animated={packLoadStatus.partCurrent == null}
+              max={packLoadStatus.partTotal ?? 100}
+            />
           </Stack>
         </ModalBody>
         <ModalFooter>

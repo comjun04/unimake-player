@@ -3,11 +3,19 @@ import { Container } from "react-bootstrap"
 import PackInfo from "@/components/PackInfo"
 import Pad from "@/components/Pad"
 import PackLoadModal from "./components/PackLoadModal"
-import useProcessPack from "./hooks/useProcessPack"
+import useProcessPack, { IPackData } from "./hooks/useProcessPack"
 
 const App: FC = () => {
   const [showPackLoadModal, setShowPackLoadModal] = useState(false)
-  const { processPack } = useProcessPack()
+  const [packData, setPackData] = useState<IPackData>()
+  const { status, processPack } = useProcessPack()
+
+  const handleLoadPack = async (file: File) => {
+    const data = await processPack(file)
+    if (data) {
+      setPackData(data)
+    }
+  }
 
   return (
     <>
@@ -18,7 +26,8 @@ const App: FC = () => {
       <PackLoadModal
         show={showPackLoadModal}
         handleClose={() => setShowPackLoadModal(false)}
-        handleLoadPack={(file) => processPack(file)}
+        handleLoadPack={handleLoadPack}
+        packLoadStatus={status}
       />
     </>
   )
