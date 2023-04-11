@@ -4,6 +4,9 @@ import { styled } from "@/styles"
 type PadButtonProps = {
   children?: ReactNode
   mcBtn?: boolean
+  selectedChain?: boolean
+  position: TButtonPosition
+  onClick?: (position: TButtonPosition) => void
 }
 
 const StyledButton = styled("button", {
@@ -47,11 +50,18 @@ const Content = styled("div", {
   height: "100%",
 })
 
-const PadButton: FC<PadButtonProps> = ({ children, mcBtn = false }) => {
+const PadButton: FC<PadButtonProps> = ({
+  children,
+  mcBtn = false,
+  selectedChain = false,
+  position,
+  onClick,
+}) => {
   const [pressed, setPressed] = useState(false)
 
   const handleButtonPress = () => {
     setPressed(true)
+    onClick?.(position)
   }
   const handleButtonRelease = () => {
     setPressed(false)
@@ -61,6 +71,7 @@ const PadButton: FC<PadButtonProps> = ({ children, mcBtn = false }) => {
     <StyledButton
       round={mcBtn}
       pressed={!mcBtn && pressed}
+      selectedChain={selectedChain}
       onPointerDown={handleButtonPress}
       onPointerUp={handleButtonRelease}
       onPointerOut={handleButtonRelease}
