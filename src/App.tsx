@@ -4,6 +4,9 @@ import PackInfo from "@/components/PackInfo"
 import Pad from "@/components/Pad"
 import PackLoadModal from "./components/PackLoadModal"
 import useProcessPack, { IPackData } from "./hooks/useProcessPack"
+import AutoplayControl from "./components/AutoplayControl"
+import { TButtonPosition } from "./types"
+import useAutoplay from "./hooks/useAutoplay"
 
 const initialPadBtnPressCount = Array(8)
 for (let i = 0; i < 8; i++) {
@@ -29,6 +32,13 @@ const App: FC = () => {
   )
 
   const { status, processPack, clear } = useProcessPack()
+  const {
+    current: currentAutoplaySegment,
+    start: startAutoplay,
+    stop: stopAutoplay,
+    reset: resetAutoplay,
+    playing: autoplaying,
+  } = useAutoplay(packData?.autoplay ?? [])
 
   const handleLoadPack = async (file: File) => {
     const data = await processPack(file)
@@ -96,6 +106,12 @@ const App: FC = () => {
         <PackInfo
           onLoadPackClick={() => setShowPackLoadModal(true)}
           infoData={packData?.info ?? {}}
+        />
+        <AutoplayControl
+          playing={autoplaying}
+          onPlay={startAutoplay}
+          onPause={stopAutoplay}
+          onStop={resetAutoplay}
         />
         <Pad chain={chain} onBtnClick={handleBtnClick} />
       </Container>
