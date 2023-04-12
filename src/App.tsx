@@ -1,12 +1,12 @@
-import { FC, useEffect, useMemo, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { Container } from "react-bootstrap"
 import PackInfo from "@/components/PackInfo"
 import Pad from "@/components/Pad"
-import PackLoadModal from "./components/PackLoadModal"
-import useProcessPack, { IPackData } from "./hooks/useProcessPack"
+import { IPackData } from "./hooks/useProcessPack"
 import AutoplayControl from "./components/AutoplayControl"
 import { TButtonPosition } from "./types"
 import useAutoplay from "./hooks/useAutoplay"
+import PackLoader from "./components/PackLoader"
 
 const initialPadBtnPressCount = Array(8)
 for (let i = 0; i < 8; i++) {
@@ -31,7 +31,6 @@ const App: FC = () => {
     initialPadBtnPressCount
   )
 
-  const { status, processPack, clear } = useProcessPack()
   const {
     current: currentAutoplaySegment,
     start: startAutoplay,
@@ -40,12 +39,9 @@ const App: FC = () => {
     playing: autoplaying,
   } = useAutoplay(packData?.autoplay ?? [])
 
-  const handleLoadPack = async (file: File) => {
-    const data = await processPack(file)
-    if (data) {
-      setPackData(data)
-      setShowPackLoadModal(false)
-    }
+  const handlePackLoadComplete = (packData: IPackData) => {
+    setPackData(packData)
+    setShowPackLoadModal(false)
   }
 
   const handleBtnClick = (position: TButtonPosition) => {
@@ -88,13 +84,6 @@ const App: FC = () => {
     }
   }
 
-  // pack load dialog 열릴 때 로딩 상태 초기화
-  useEffect(() => {
-    if (showPackLoadModal) {
-      clear()
-    }
-  }, [showPackLoadModal])
-
   // pack을 load하거나 chain이 바뀔 때 버튼 누른 횟수 초기화
   useEffect(() => {
     setPadBtnPressCount(initialPadBtnPressCount)
@@ -115,11 +104,10 @@ const App: FC = () => {
         />
         <Pad chain={chain} onBtnClick={handleBtnClick} />
       </Container>
-      <PackLoadModal
-        show={showPackLoadModal}
-        handleClose={() => setShowPackLoadModal(false)}
-        handleLoadPack={handleLoadPack}
-        packLoadStatus={status}
+      <PackLoader
+        showModal={showPackLoadModal}
+        handleModalClose={() => setShowPackLoadModal(false)}
+        onLoadComplete={handlePackLoadComplete}
       />
     </>
   )
