@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import { Container } from "react-bootstrap"
 import PackInfo from "@/components/PackInfo"
 import Pad from "@/components/Pad"
@@ -37,6 +37,8 @@ const App: FC = () => {
   )
   const [padBtnPressed, setPadBtnPressed] =
     useState<boolean[][]>(initialPadBtnPressed)
+  const padBtnPressedRef = useRef(padBtnPressed)
+  padBtnPressedRef.current = padBtnPressed
 
   const {
     currentSegment: currentAutoplaySegment,
@@ -66,7 +68,7 @@ const App: FC = () => {
       return
     }
 
-    const newPadBtnPressed = arrayDeepCopy(padBtnPressed)
+    const newPadBtnPressed = arrayDeepCopy(padBtnPressedRef.current)
     newPadBtnPressed[position.x - 1][position.y - 1] = true
     setPadBtnPressed(newPadBtnPressed)
 
@@ -102,7 +104,7 @@ const App: FC = () => {
   const handleBtnRelease = (position: TButtonPosition) => {
     if (position.mc != null) return
 
-    const newPadBtnPressed = arrayDeepCopy(padBtnPressed)
+    const newPadBtnPressed = arrayDeepCopy(padBtnPressedRef.current)
     newPadBtnPressed[position.x - 1][position.y - 1] = false
     setPadBtnPressed(newPadBtnPressed)
   }
@@ -130,6 +132,23 @@ const App: FC = () => {
           y: currentAutoplaySegment.y,
         })
         break
+
+      case "touch": {
+        handleBtnPress({
+          x: currentAutoplaySegment.x,
+          y: currentAutoplaySegment.y,
+        })
+
+        // TODO: clear timer when unmount
+        setTimeout(() => {
+          // currentAutoplaySegment 값이 timeout 전에 바뀌었어도 여기 있는 값은 변하지 않음
+          handleBtnRelease({
+            x: currentAutoplaySegment.x,
+            y: currentAutoplaySegment.y,
+          })
+        }, 150)
+        break
+      }
 
       case "chain":
         setChain(currentAutoplaySegment.chain)
