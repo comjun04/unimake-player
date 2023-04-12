@@ -2,12 +2,11 @@ import { FC, useEffect, useMemo, useState } from "react"
 import { Container } from "react-bootstrap"
 import PackInfo from "@/components/PackInfo"
 import Pad from "@/components/Pad"
-import PackLoadModal from "./components/PackLoadModal"
 import useProcessPack, { IPackData } from "./hooks/useProcessPack"
 import AutoplayControl from "./components/AutoplayControl"
 import { TButtonPosition } from "./types"
 import useAutoplay from "./hooks/useAutoplay"
-import PackLoader from "./PackLoader"
+import PackLoadWrapper from "./components/PackLoadWrapper"
 
 const initialPadBtnPressCount = Array(8)
 for (let i = 0; i < 8; i++) {
@@ -41,29 +40,11 @@ const App: FC = () => {
     playing: autoplaying,
   } = useAutoplay(packData?.autoplay ?? [])
 
-  const packLoader = useMemo(() => new PackLoader(), [])
-  const [packLoaderStatus, setPackLoaderStatus] = useState<any>({})
-
-  const handleLoadPack = async (file: File) => {
-    // hook version
-    // const data = await processPack(file)
-    // if (data) {
-    //   setPackData(data)
-    //   setShowPackLoadModal(false)
-    // }
-
-    // event handler version
-    packLoader.addEventListener("progress", (evt: any) => {
-      console.log(evt.detail)
-      setPackLoaderStatus(evt.detail)
-    })
-    packLoader.addEventListener("done", () => {
-      console.log(packLoader.result)
-      setPackData(packLoader.result)
+  const handlePackLoadComplete = (packData: IPackData) => {
+    if (packData) {
+      setPackData(packData)
       setShowPackLoadModal(false)
-    })
-
-    packLoader.process(file)
+    }
   }
 
   const handleBtnClick = (position: TButtonPosition) => {
@@ -107,11 +88,11 @@ const App: FC = () => {
   }
 
   // pack load dialog 열릴 때 로딩 상태 초기화
-  useEffect(() => {
-    if (showPackLoadModal) {
-      clear()
-    }
-  }, [showPackLoadModal])
+  // useEffect(() => {
+  //   if (showPackLoadModal) {
+  //     clear()
+  //   }
+  // }, [showPackLoadModal])
 
   // pack을 load하거나 chain이 바뀔 때 버튼 누른 횟수 초기화
   useEffect(() => {
@@ -133,12 +114,10 @@ const App: FC = () => {
         />
         <Pad chain={chain} onBtnClick={handleBtnClick} />
       </Container>
-      <PackLoadModal
-        show={showPackLoadModal}
-        handleClose={() => setShowPackLoadModal(false)}
-        handleLoadPack={handleLoadPack}
-        // packLoadStatus={status}
-        packLoadStatus={packLoaderStatus}
+      <PackLoadWrapper
+        showModal={showPackLoadModal}
+        handleModalClose={() => setShowPackLoadModal(false)}
+        onLoadComplete={handlePackLoadComplete}
       />
     </>
   )
