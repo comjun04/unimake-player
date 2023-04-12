@@ -7,6 +7,7 @@ import useProcessPack, { IPackData } from "./hooks/useProcessPack"
 import AutoplayControl from "./components/AutoplayControl"
 import { TButtonPosition } from "./types"
 import useAutoplay from "./hooks/useAutoplay"
+import PackLoader from "./PackLoader"
 
 const initialPadBtnPressCount = Array(8)
 for (let i = 0; i < 8; i++) {
@@ -40,12 +41,29 @@ const App: FC = () => {
     playing: autoplaying,
   } = useAutoplay(packData?.autoplay ?? [])
 
+  const packLoader = useMemo(() => new PackLoader(), [])
+  const [packLoaderStatus, setPackLoaderStatus] = useState<any>({})
+
   const handleLoadPack = async (file: File) => {
-    const data = await processPack(file)
-    if (data) {
-      setPackData(data)
+    // hook version
+    // const data = await processPack(file)
+    // if (data) {
+    //   setPackData(data)
+    //   setShowPackLoadModal(false)
+    // }
+
+    // event handler version
+    packLoader.addEventListener("progress", (evt: any) => {
+      console.log(evt.detail)
+      setPackLoaderStatus(evt.detail)
+    })
+    packLoader.addEventListener("done", () => {
+      console.log(packLoader.result)
+      setPackData(packLoader.result)
       setShowPackLoadModal(false)
-    }
+    })
+
+    packLoader.process(file)
   }
 
   const handleBtnClick = (position: TButtonPosition) => {
@@ -119,7 +137,8 @@ const App: FC = () => {
         show={showPackLoadModal}
         handleClose={() => setShowPackLoadModal(false)}
         handleLoadPack={handleLoadPack}
-        packLoadStatus={status}
+        // packLoadStatus={status}
+        packLoadStatus={packLoaderStatus}
       />
     </>
   )
