@@ -9,6 +9,15 @@ export interface IProcessStatus {
   partTotal?: number
 }
 
+export interface IPackData {
+  info: Record<string, string>
+  sounds: {
+    mappings: IKeySoundData["mappings"]
+    howlers: Map<string, Howl>
+  }
+  autoplay: TAutoplayData[]
+}
+
 interface IKeySoundData {
   sounds: string[]
   mappings: Map<
@@ -21,13 +30,20 @@ interface IKeySoundData {
   >
 }
 
-export interface IPackData {
-  info: Record<string, string>
-  sounds: {
-    mappings: IKeySoundData["mappings"]
-    howlers: Map<string, Howl>
-  }
-}
+type TAutoplayData =
+  | {
+      type: "chain"
+      chain: number
+    }
+  | {
+      type: "delay"
+      delay: number
+    }
+  | {
+      type: "on" | "off" | "touch"
+      x: number
+      y: number
+    }
 
 const possibleInfoFileNames = ["info", "Info"]
 const requiredInfoKeys = [
@@ -37,6 +53,15 @@ const requiredInfoKeys = [
   "buttonY",
   "chain",
 ]
+const possibleAutoplayFileNames = ["autoplay", "autoPlay"]
+
+const autoplayRegex = new Map([
+  ["chain", /^c(?:hain)? ([1-8])$/],
+  ["on", /^on? ([1-8]) ([1-8])$/],
+  ["off", /^(?:of)?f ([1-8]) ([1-8])$/],
+  ["touch", /^t(?:ouch)? ([1-8]) ([1-8])$/],
+  ["delay", /^d(?:elay)? (\d+)$/],
+])
 
 function parseInfo(str: string) {
   const data: Record<string, string> = {}
@@ -134,6 +159,70 @@ function loadSound(name: string, file: Blob) {
   })
 }
 
+function parseAutoplay(str: string) {
+  const data: TAutoplayData[] = []
+
+  const lines = str.split("\n")
+  lines.forEach((l, lineNo) => {
+    const line = l.trim()
+    if (line.length < 1) return
+
+    let mode = ""
+    if (line.startsWith("c ") || line.startsWith("chain ")) {
+      mode = "chain"
+    } else if (line.startsWith("o ") || line.startsWith("on ")) {
+      mode = "on"
+    } else if (line.startsWith("f ") || line.startsWith("off ")) {
+      mode = "off"
+    } else if (line.startsWith("t ") || line.startsWith("touch ")) {
+      mode = "touch"
+    } else if (line.startsWith("d ") || line.startsWith("delay ")) {
+      mode = "delay"
+    } else {
+      throw new Error(`unknown autoplay syntax on line ${lineNo}: ${line}`)
+    }
+
+    const regex = autoplayRegex.get(mode)!
+    const match = regex.exec(line)
+    if (!match) {
+      throw new Error(`unknown autoplay syntax on line ${lineNo}: ${line}`)
+    }
+
+    switch (mode) {
+      case "chain": {
+        const [_, chain] = match
+        data.push({
+          type: "chain",
+          chain: parseInt(chain),
+        })
+        break
+      }
+
+      case "delay": {
+        const [_, delay] = match
+        data.push({
+          type: "delay",
+          delay: parseInt(delay),
+        })
+        break
+      }
+
+      case "on":
+      case "off":
+      case "touch": {
+        const [_, x, y] = match
+        data.push({
+          type: mode,
+          x: parseInt(x),
+          y: parseInt(y),
+        })
+      }
+    }
+  })
+
+  return data
+}
+
 // hook
 const useProcessPack = () => {
   const [status, setStatus] = useState<IProcessStatus>({
@@ -200,6 +289,7 @@ const useProcessPack = () => {
     const keySoundData = parseKeySound(keySoundFileStr)
     console.log(keySoundData)
 
+    // 4. load sound file
     setStatus({
       step: 4,
       state: "load_sound",
@@ -208,10 +298,6 @@ const useProcessPack = () => {
     })
 
     // sounds folder name can be `sounds` or `Sounds`
-    // TODO: sounds/../some/file 같이 folder traversal 되는 파일명이 없는지 확인 필요
-    const soundFileList = zipData.filter((entry) =>
-      /^[Ss]ounds\/.+$/.test(entry.filename)
-    )
     const soundObjects = new Map<string, Howl>()
 
     let soundCnt = 0
@@ -222,6 +308,8 @@ const useProcessPack = () => {
         partCurrent: ++soundCnt,
         partTotal: keySoundData.sounds.length,
       })
+
+      // TODO: 성능최적화 필요 (한 파일 찾는데 find() 함수로 배열을 다 뒤지고 있음)
       const file = zipData.find((entry) =>
         RegExp(`^[Ss]ounds/${soundName}$`).test(entry.filename)
       )
@@ -238,6 +326,31 @@ const useProcessPack = () => {
       soundObjects.set(soundName, soundObj)
     }
 
+    // TODO: loading LED
+
+    // 5. parse 'autoPlay' file
+    setStatus({
+      step: 5,
+      state: "parse_autoPlay",
+    })
+
+    const autoplayFile = zipData.find((entry) =>
+      possibleAutoplayFileNames.includes(entry.filename)
+    )
+    if (!autoplayFile) {
+      throw new Error("'autoPlay' file does not exist")
+    }
+
+    const autoPlayFileStr = await autoplayFile.getData?.(new TextWriter())
+    if (!autoPlayFileStr) {
+      throw new Error("'info' file exists but cannot read data from it")
+    }
+
+    const autoplayData = parseAutoplay(autoPlayFileStr)
+    console.log(autoplayData)
+
+    // ====================
+
     setProcessing(false)
     setStatus({
       step: 100,
@@ -249,6 +362,7 @@ const useProcessPack = () => {
         mappings: keySoundData.mappings,
         howlers: soundObjects,
       },
+      autoplay: autoplayData,
     }
   }
 
