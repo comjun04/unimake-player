@@ -1,6 +1,7 @@
 import { styled } from "@/styles"
 import { FC, ReactElement } from "react"
 import PadButton from "./PadButton"
+import { TButtonPosition } from "@/types"
 
 type PadProps = {
   chain: number

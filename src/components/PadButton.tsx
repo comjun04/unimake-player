@@ -1,5 +1,6 @@
 import { FC, ReactNode, useState } from "react"
 import { styled } from "@/styles"
+import { TButtonPosition } from "@/types"
 
 type PadButtonProps = {
   children?: ReactNode

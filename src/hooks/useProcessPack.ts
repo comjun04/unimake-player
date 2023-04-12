@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { BlobReader, ZipReader, TextWriter, BlobWriter } from "@zip.js/zip.js"
 import { Howl } from "howler"
+import type { TAutoplayData } from "@/types"
 
 export interface IProcessStatus {
   step: number
@@ -29,21 +30,6 @@ interface IKeySoundData {
     }[]
   >
 }
-
-type TAutoplayData =
-  | {
-      type: "chain"
-      chain: number
-    }
-  | {
-      type: "delay"
-      delay: number
-    }
-  | {
-      type: "on" | "off" | "touch"
-      x: number
-      y: number
-    }
 
 const possibleInfoFileNames = ["info", "Info"]
 const requiredInfoKeys = [
