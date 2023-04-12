@@ -76,6 +76,11 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
               now={packLoadStatus.partCurrent ?? 100}
               animated={packLoadStatus.partCurrent == null}
               max={packLoadStatus.partTotal ?? 100}
+              label={
+                packLoadStatus.partCurrent != null
+                  ? `${packLoadStatus.partCurrent} / ${packLoadStatus.partTotal}`
+                  : ""
+              }
             />
           </Stack>
         </ModalBody>
