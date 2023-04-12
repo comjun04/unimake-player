@@ -2,11 +2,11 @@ import { FC, useEffect, useState } from "react"
 import { Container } from "react-bootstrap"
 import PackInfo from "@/components/PackInfo"
 import Pad from "@/components/Pad"
-import { IPackData } from "./hooks/useProcessPack"
+import useProcessPack, { IPackData } from "./hooks/useProcessPack"
 import AutoplayControl from "./components/AutoplayControl"
 import { TButtonPosition } from "./types"
 import useAutoplay from "./hooks/useAutoplay"
-import PackLoader from "./components/PackLoader"
+import PackLoadWrapper from "./components/PackLoadWrapper"
 
 const initialPadBtnPressCount = Array(8)
 for (let i = 0; i < 8; i++) {
@@ -40,8 +40,10 @@ const App: FC = () => {
   } = useAutoplay(packData?.autoplay ?? [])
 
   const handlePackLoadComplete = (packData: IPackData) => {
-    setPackData(packData)
-    setShowPackLoadModal(false)
+    if (packData) {
+      setPackData(packData)
+      setShowPackLoadModal(false)
+    }
   }
 
   const handleBtnClick = (position: TButtonPosition) => {
@@ -104,7 +106,7 @@ const App: FC = () => {
         />
         <Pad chain={chain} onBtnClick={handleBtnClick} />
       </Container>
-      <PackLoader
+      <PackLoadWrapper
         showModal={showPackLoadModal}
         handleModalClose={() => setShowPackLoadModal(false)}
         onLoadComplete={handlePackLoadComplete}

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { BlobReader, ZipReader, TextWriter, BlobWriter } from "@zip.js/zip.js"
+import JSZip from "jszip"
 import { Howl } from "howler"
 import type { TAutoplayData } from "@/types"
 
@@ -48,6 +48,13 @@ const autoplayRegex = new Map([
   ["touch", /^t(?:ouch)? ([1-8]) ([1-8])$/],
   ["delay", /^d(?:elay)? (\d+)$/],
 ])
+
+function findAvailableFile(zip: JSZip, fileNames: string[]) {
+  for (const name of fileNames) {
+    const file = zip.file(name)
+    if (file != null) return file
+  }
+}
 
 function parseInfo(str: string) {
   const data: Record<string, string> = {}
@@ -231,21 +238,16 @@ const useProcessPack = () => {
     setProcessing(true)
 
     setStatus({ step: 1, state: "prepare" })
-
-    const reader = new ZipReader(new BlobReader(file))
-    const zipData = await reader.getEntries()
-    console.log(zipData)
+    const zip = await JSZip.loadAsync(file, { createFolders: true })
 
     setStatus({ step: 2, state: "parse_info" })
 
-    const infoFile = zipData.find((entry) =>
-      possibleInfoFileNames.includes(entry.filename)
-    )
+    const infoFile = findAvailableFile(zip, possibleInfoFileNames)
     if (!infoFile) {
       throw new Error("'info' file does not exist")
     }
 
-    const infoFileString = await infoFile.getData?.(new TextWriter())
+    const infoFileString = await infoFile.async("string")
     if (!infoFileString) {
       throw new Error("'info' file exists but cannot read data from it")
     }
@@ -262,12 +264,12 @@ const useProcessPack = () => {
     // 3. parse 'keySound' file
     setStatus({ step: 3, state: "parse_keySound" })
 
-    const keySoundFile = zipData.find((entry) => entry.filename === "keySound")
+    const keySoundFile = findAvailableFile(zip, ["keySound"])
     if (!keySoundFile) {
       throw new Error("'keySound' file does not exist")
     }
 
-    const keySoundFileStr = await keySoundFile.getData?.(new TextWriter())
+    const keySoundFileStr = await keySoundFile.async("string")
     if (!keySoundFileStr) {
       throw new Error("'keySound' file exists but cannot read data from it")
     }
@@ -286,6 +288,12 @@ const useProcessPack = () => {
     // sounds folder name can be `sounds` or `Sounds`
     const soundObjects = new Map<string, Howl>()
 
+    const soundsFolderObj = zip.folder(/^[Ss]ounds\/$/)[0]
+    if (soundsFolderObj == null || !soundsFolderObj.dir) {
+      throw new Error("`sounds` folder does not exist")
+    }
+    const soundsFolder = zip.folder(soundsFolderObj.name)!
+
     let soundCnt = 0
     for await (const soundName of keySoundData.sounds) {
       setStatus({
@@ -296,14 +304,12 @@ const useProcessPack = () => {
       })
 
       // TODO: 성능최적화 필요 (한 파일 찾는데 find() 함수로 배열을 다 뒤지고 있음)
-      const file = zipData.find((entry) =>
-        RegExp(`^[Ss]ounds/${soundName}$`).test(entry.filename)
-      )
+      const file = soundsFolder.file(soundName)
       if (!file) {
         throw new Error("sound file does not exist: " + soundName)
       }
 
-      const soundBlob = await file.getData?.(new BlobWriter())
+      const soundBlob = await file.async("blob")
       if (!soundBlob) {
         throw new Error("cannot unzip sound file: " + soundName)
       }
@@ -320,14 +326,12 @@ const useProcessPack = () => {
       state: "parse_autoPlay",
     })
 
-    const autoplayFile = zipData.find((entry) =>
-      possibleAutoplayFileNames.includes(entry.filename)
-    )
+    const autoplayFile = findAvailableFile(zip, possibleAutoplayFileNames)
     if (!autoplayFile) {
       throw new Error("'autoPlay' file does not exist")
     }
 
-    const autoPlayFileStr = await autoplayFile.getData?.(new TextWriter())
+    const autoPlayFileStr = await autoplayFile.async("text")
     if (!autoPlayFileStr) {
       throw new Error("'info' file exists but cannot read data from it")
     }
