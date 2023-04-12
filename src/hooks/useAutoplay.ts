@@ -57,7 +57,15 @@ const useAutoplay = (data: TAutoplayData[]) => {
     setPlaying(false)
   }
 
-  return { start, stop, reset, current: current2, playing }
+  return {
+    start,
+    stop,
+    reset,
+    currentSegment: current2,
+    playing,
+    now: idx,
+    total: data.length,
+  }
 }
 
 export default useAutoplay

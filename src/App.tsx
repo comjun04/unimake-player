@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react"
 import { Container } from "react-bootstrap"
 import PackInfo from "@/components/PackInfo"
 import Pad from "@/components/Pad"
-import useProcessPack, { IPackData } from "./hooks/useProcessPack"
+import { IPackData } from "./hooks/useProcessPack"
 import AutoplayControl from "./components/AutoplayControl"
 import { TButtonPosition } from "./types"
 import useAutoplay from "./hooks/useAutoplay"
@@ -13,8 +13,13 @@ for (let i = 0; i < 8; i++) {
   initialPadBtnPressCount[i] = Array(8).fill(0)
 }
 
-function arrayDeepCopy(arr: number[][]) {
-  const newArr: number[][] = []
+const initialPadBtnPressed = Array(8)
+for (let i = 0; i < 8; i++) {
+  initialPadBtnPressed[i] = Array(8).fill(false)
+}
+
+function arrayDeepCopy<T>(arr: T[][]) {
+  const newArr: T[][] = []
   arr.forEach((el) => {
     newArr.push(el.slice())
   })
@@ -30,13 +35,17 @@ const App: FC = () => {
   const [padBtnPressCount, setPadBtnPressCount] = useState<number[][]>(
     initialPadBtnPressCount
   )
+  const [padBtnPressed, setPadBtnPressed] =
+    useState<boolean[][]>(initialPadBtnPressed)
 
   const {
-    current: currentAutoplaySegment,
+    currentSegment: currentAutoplaySegment,
     start: startAutoplay,
     stop: stopAutoplay,
     reset: resetAutoplay,
     playing: autoplaying,
+    now: autoplayNowIdx,
+    total: autoplayTotalIdx,
   } = useAutoplay(packData?.autoplay ?? [])
 
   const handlePackLoadComplete = (packData: IPackData) => {
@@ -46,7 +55,7 @@ const App: FC = () => {
     }
   }
 
-  const handleBtnClick = (position: TButtonPosition) => {
+  const handleBtnPress = (position: TButtonPosition) => {
     // console.log(position)
 
     // mc button
@@ -56,6 +65,10 @@ const App: FC = () => {
       }
       return
     }
+
+    const newPadBtnPressed = arrayDeepCopy(padBtnPressed)
+    newPadBtnPressed[position.x - 1][position.y - 1] = true
+    setPadBtnPressed(newPadBtnPressed)
 
     // pack이 로드되지 않았으면 빠져나가기
     if (packData == null) {
@@ -86,10 +99,43 @@ const App: FC = () => {
     }
   }
 
+  const handleBtnRelease = (position: TButtonPosition) => {
+    if (position.mc != null) return
+
+    const newPadBtnPressed = arrayDeepCopy(padBtnPressed)
+    newPadBtnPressed[position.x - 1][position.y - 1] = false
+    setPadBtnPressed(newPadBtnPressed)
+  }
+
   // pack을 load하거나 chain이 바뀔 때 버튼 누른 횟수 초기화
   useEffect(() => {
     setPadBtnPressCount(initialPadBtnPressCount)
   }, [packData, chain])
+
+  // autoplay segment 처리
+  useEffect(() => {
+    if (!currentAutoplaySegment) return
+
+    switch (currentAutoplaySegment.type) {
+      case "on":
+        handleBtnPress({
+          x: currentAutoplaySegment.x,
+          y: currentAutoplaySegment.y,
+        })
+        break
+
+      case "off":
+        handleBtnRelease({
+          x: currentAutoplaySegment.x,
+          y: currentAutoplaySegment.y,
+        })
+        break
+
+      case "chain":
+        setChain(currentAutoplaySegment.chain)
+        break
+    }
+  }, [currentAutoplaySegment])
 
   return (
     <>
@@ -103,8 +149,15 @@ const App: FC = () => {
           onPlay={startAutoplay}
           onPause={stopAutoplay}
           onStop={resetAutoplay}
+          now={autoplayNowIdx}
+          total={autoplayTotalIdx}
         />
-        <Pad chain={chain} onBtnClick={handleBtnClick} />
+        <Pad
+          chain={chain}
+          btnPressedMap={padBtnPressed}
+          onBtnPress={handleBtnPress}
+          onBtnRelease={handleBtnRelease}
+        />
       </Container>
       <PackLoadWrapper
         showModal={showPackLoadModal}

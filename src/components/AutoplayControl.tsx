@@ -6,6 +6,8 @@ type AutoplayControlProps = {
   onPlay: () => void
   onPause: () => void
   onStop: () => void
+  now: number
+  total: number
 }
 
 const AutoplayControl: FC<AutoplayControlProps> = ({
@@ -13,6 +15,8 @@ const AutoplayControl: FC<AutoplayControlProps> = ({
   onPlay,
   onPause,
   onStop,
+  now,
+  total,
 }) => {
   return (
     <Card className="mb-2">
@@ -41,7 +45,7 @@ const AutoplayControl: FC<AutoplayControlProps> = ({
               ▶️
             </Button>
           </Stack>
-          <ProgressBar />
+          <ProgressBar now={now} max={total} />
         </Stack>
       </Card.Body>
     </Card>

@@ -7,7 +7,9 @@ type PadButtonProps = {
   mcBtn?: boolean
   selectedChain?: boolean
   position: TButtonPosition
-  onClick?: (position: TButtonPosition) => void
+  pressed: boolean
+  onPress?: (position: TButtonPosition) => void
+  onRelease?: (position: TButtonPosition) => void
 }
 
 const StyledButton = styled("button", {
@@ -56,16 +58,15 @@ const PadButton: FC<PadButtonProps> = ({
   mcBtn = false,
   selectedChain = false,
   position,
-  onClick,
+  pressed,
+  onPress: onPress,
+  onRelease,
 }) => {
-  const [pressed, setPressed] = useState(false)
-
   const handleButtonPress = () => {
-    setPressed(true)
-    onClick?.(position)
+    onPress?.(position)
   }
   const handleButtonRelease = () => {
-    setPressed(false)
+    onRelease?.(position)
   }
 
   return (

@@ -5,7 +5,9 @@ import { TButtonPosition } from "@/types"
 
 type PadProps = {
   chain: number
-  onBtnClick: (position: TButtonPosition) => void
+  btnPressedMap: boolean[][]
+  onBtnPress: (position: TButtonPosition) => void
+  onBtnRelease: (position: TButtonPosition) => void
 }
 
 const StyledPad = styled("div", {
@@ -14,7 +16,12 @@ const StyledPad = styled("div", {
   gap: 1,
 })
 
-const Pad: FC<PadProps> = ({ chain, onBtnClick }) => {
+const Pad: FC<PadProps> = ({
+  chain,
+  btnPressedMap,
+  onBtnPress,
+  onBtnRelease,
+}) => {
   const buttons: ReactElement<typeof PadButton>[] = []
 
   for (let i = 0; i < 8; i++) {
@@ -31,7 +38,11 @@ const Pad: FC<PadProps> = ({ chain, onBtnClick }) => {
           mcBtn={mcBtn}
           selectedChain={mcBtn && position?.mc === chain}
           position={position}
-          onClick={onBtnClick}
+          pressed={
+            mcBtn ? false : btnPressedMap[position.x! - 1][position.y! - 1]
+          }
+          onPress={onBtnPress}
+          onRelease={onBtnRelease}
         >
           {id}
         </PadButton>
