@@ -58,7 +58,7 @@ const keyledFileRegex = /^keyLED\/([1-8]) ([1-8]) ([1-8]) (\d+)(?: ([a-z]))?$/
 const keyledRegex = new Map([
   ["chain", /^c(?:hain)? ([1-8])/],
   ["on", /^on? (?:([1-8]) ([1-8])|mc (\d+)) a(?:uto)? (\d+)$/],
-  ["off", /^(?:of)?f ([1-8]) ([1-8])$/],
+  ["off", /^(?:of)?f (?:([1-8]) ([1-8])|mc (\d+))$/],
   ["delay", /^d(?:elay)? (\d+)$/],
 ])
 
@@ -233,12 +233,19 @@ function parseKeyLED(str: string) {
       }
 
       case "off": {
-        const [_, x, y] = match
-        data.push({
-          type: "off",
-          x: parseInt(x),
-          y: parseInt(y),
-        })
+        const [_, x, y, mcBtn] = match
+        if (mcBtn != null) {
+          data.push({
+            type: "off",
+            mc: parseInt(mcBtn),
+          })
+        } else {
+          data.push({
+            type: "off",
+            x: parseInt(x),
+            y: parseInt(y),
+          })
+        }
       }
     }
   })
