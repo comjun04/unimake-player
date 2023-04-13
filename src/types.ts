@@ -50,6 +50,10 @@ export type TKeyLEDSegment =
       x: number
       y: number
     }
+  | {
+      type: "off"
+      mc: number
+    }
 
 export type TKeyLEDDataUnsorted = Record<
   string,
