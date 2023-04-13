@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@stitches/react": "^1.2.8",
     "@types/howler": "^2.2.7",
     "howler": "^2.2.3",
     "jszip": "^3.10.1",
