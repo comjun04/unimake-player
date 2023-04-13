@@ -1,7 +1,7 @@
-import { styled } from "@/styles"
 import { FC, ReactElement } from "react"
 import PadButton from "./PadButton"
 import { TButtonPosition } from "@/types"
+import styles from "@/styles/pad.module.css"
 
 type PadProps = {
   chain: number
@@ -9,12 +9,6 @@ type PadProps = {
   onBtnPress: (position: TButtonPosition) => void
   onBtnRelease: (position: TButtonPosition) => void
 }
-
-const StyledPad = styled("div", {
-  display: "grid",
-  gridTemplateColumns: "repeat(9, minmax(0, 1fr))",
-  gap: 1,
-})
 
 const Pad: FC<PadProps> = ({
   chain,
@@ -50,7 +44,7 @@ const Pad: FC<PadProps> = ({
     }
   }
 
-  return <StyledPad>{buttons}</StyledPad>
+  return <div className={styles.pad}>{buttons}</div>
 }
 
 export default Pad

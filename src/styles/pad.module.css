@@ -1,0 +1,30 @@
+.pad {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 1px;
+}
+
+.padButton {
+  background-color: lightgray;
+  box-sizing: border-box;
+}
+
+.padButton::before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+}
+
+.padButtonContent {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.padButtonPressedBg {
+  background-color: gray;
+}
+.padButtonMCSelectedBg {
+  background-color: yellow;
+}
