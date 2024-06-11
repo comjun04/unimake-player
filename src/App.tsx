@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { Container } from "react-bootstrap"
 import PackInfo from "@/components/PackInfo"
 import Pad from "@/components/Pad"
@@ -7,6 +7,8 @@ import AutoplayControl from "./components/AutoplayControl"
 import { TButtonPosition } from "./types"
 import useAutoplay from "./hooks/useAutoplay"
 import PackLoadWrapper from "./components/PackLoadWrapper"
+import { usePadButtonsStore, usePadStore } from "./store"
+import { useShallow } from "zustand/react/shallow"
 
 const initialPadBtnPressCount = Array(8)
 for (let i = 0; i < 8; i++) {
@@ -30,15 +32,29 @@ function arrayDeepCopy<T>(arr: T[][]) {
 const App: FC = () => {
   const [showPackLoadModal, setShowPackLoadModal] = useState(false)
   const [packData, setPackData] = useState<IPackData>()
-  const [chain, setChain] = useState(1)
 
   const [padBtnPressCount, setPadBtnPressCount] = useState<number[][]>(
     initialPadBtnPressCount
   )
-  const [padBtnPressed, setPadBtnPressed] =
-    useState<boolean[][]>(initialPadBtnPressed)
-  const padBtnPressedRef = useRef(padBtnPressed)
-  padBtnPressedRef.current = padBtnPressed
+  // const [padBtnPressed, setPadBtnPressed] =
+  //   useState<boolean[][]>(initialPadBtnPressed)
+  // const padBtnPressedRef = useRef(padBtnPressed)
+  // padBtnPressedRef.current = padBtnPressed
+
+  // new state store
+  const { chain, setChain } = usePadStore(
+    useShallow((state) => ({
+      chain: state.chain,
+      setChain: state.setChain,
+    }))
+  )
+
+  const { markBtnPressed, markBtnReleased } = usePadButtonsStore(
+    useShallow((state) => ({
+      markBtnPressed: state.press,
+      markBtnReleased: state.release,
+    }))
+  )
 
   const {
     currentSegment: currentAutoplaySegment,
@@ -68,9 +84,10 @@ const App: FC = () => {
       return
     }
 
-    const newPadBtnPressed = arrayDeepCopy(padBtnPressedRef.current)
-    newPadBtnPressed[position.x - 1][position.y - 1] = true
-    setPadBtnPressed(newPadBtnPressed)
+    // const newPadBtnPressed = arrayDeepCopy(padBtnPressedRef.current)
+    // newPadBtnPressed[position.x - 1][position.y - 1] = true
+    // setPadBtnPressed(newPadBtnPressed)
+    markBtnPressed(position.x, position.y)
 
     // pack이 로드되지 않았으면 빠져나가기
     if (packData == null) {
@@ -104,9 +121,11 @@ const App: FC = () => {
   const handleBtnRelease = (position: TButtonPosition) => {
     if (position.mc != null) return
 
-    const newPadBtnPressed = arrayDeepCopy(padBtnPressedRef.current)
-    newPadBtnPressed[position.x - 1][position.y - 1] = false
-    setPadBtnPressed(newPadBtnPressed)
+    // const newPadBtnPressed = arrayDeepCopy(padBtnPressedRef.current)
+    // newPadBtnPressed[position.x - 1][position.y - 1] = false
+    // setPadBtnPressed(newPadBtnPressed)
+
+    markBtnReleased(position.x, position.y)
   }
 
   // pack을 load하거나 chain이 바뀔 때 버튼 누른 횟수 초기화
@@ -171,12 +190,7 @@ const App: FC = () => {
           now={autoplayNowIdx}
           total={autoplayTotalIdx}
         />
-        <Pad
-          chain={chain}
-          btnPressedMap={padBtnPressed}
-          onBtnPress={handleBtnPress}
-          onBtnRelease={handleBtnRelease}
-        />
+        <Pad onBtnPress={handleBtnPress} onBtnRelease={handleBtnRelease} />
       </Container>
       <PackLoadWrapper
         showModal={showPackLoadModal}

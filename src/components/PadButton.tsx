@@ -1,13 +1,12 @@
 import { FC, ReactNode } from "react"
 import { TButtonPosition } from "@/types"
 import styles from "@/styles/pad.module.css"
+import { usePadButtonsStore, usePadStore } from "@/store"
 
 type PadButtonProps = {
   children?: ReactNode
   mcBtn?: boolean
-  selectedChain?: boolean
   position: TButtonPosition
-  pressed: boolean
   onPress?: (position: TButtonPosition) => void
   onRelease?: (position: TButtonPosition) => void
 }
@@ -15,12 +14,23 @@ type PadButtonProps = {
 const PadButton: FC<PadButtonProps> = ({
   children,
   mcBtn = false,
-  selectedChain = false,
   position,
-  pressed,
   onPress: onPress,
   onRelease,
 }) => {
+  const currentChain = usePadStore((state) => state.chain)
+
+  const pressed = usePadButtonsStore((state) => {
+    if ("mc" in position) {
+      return false
+    }
+
+    return state.getButton(position.x, position.y).pressed
+  })
+
+  const shouldShowSelectedChain =
+    "mc" in position && position.mc === currentChain
+
   const handleButtonPress = () => {
     onPress?.(position)
   }
@@ -29,7 +39,7 @@ const PadButton: FC<PadButtonProps> = ({
   }
 
   const roundClassname = mcBtn ? "rounded-circle" : "rounded"
-  const bgColorClassname = selectedChain
+  const bgColorClassname = shouldShowSelectedChain
     ? styles.padButtonMCSelectedBg
     : !mcBtn && pressed
     ? styles.padButtonPressedBg

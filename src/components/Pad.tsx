@@ -4,18 +4,11 @@ import { TButtonPosition } from "@/types"
 import styles from "@/styles/pad.module.css"
 
 type PadProps = {
-  chain: number
-  btnPressedMap: boolean[][]
   onBtnPress: (position: TButtonPosition) => void
   onBtnRelease: (position: TButtonPosition) => void
 }
 
-const Pad: FC<PadProps> = ({
-  chain,
-  btnPressedMap,
-  onBtnPress,
-  onBtnRelease,
-}) => {
+const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
   const buttons: ReactElement<typeof PadButton>[] = []
 
   for (let i = 0; i < 8; i++) {
@@ -30,11 +23,7 @@ const Pad: FC<PadProps> = ({
         <PadButton
           key={id}
           mcBtn={mcBtn}
-          selectedChain={mcBtn && position?.mc === chain}
           position={position}
-          pressed={
-            mcBtn ? false : btnPressedMap[position.x! - 1][position.y! - 1]
-          }
           onPress={onBtnPress}
           onRelease={onBtnRelease}
         >
