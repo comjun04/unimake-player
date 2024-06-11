@@ -7,41 +7,20 @@ import AutoplayControl from "./components/AutoplayControl"
 import { TButtonPosition } from "./types"
 import useAutoplay from "./hooks/useAutoplay"
 import PackLoadWrapper from "./components/PackLoadWrapper"
-import { usePadButtonsStore, usePadStore } from "./store"
+import { usePackStore, usePadButtonsStore, usePadStore } from "./store"
 import { useShallow } from "zustand/react/shallow"
-
-const initialPadBtnPressCount = Array(8)
-for (let i = 0; i < 8; i++) {
-  initialPadBtnPressCount[i] = Array(8).fill(0)
-}
-
-const initialPadBtnPressed = Array(8)
-for (let i = 0; i < 8; i++) {
-  initialPadBtnPressed[i] = Array(8).fill(false)
-}
-
-function arrayDeepCopy<T>(arr: T[][]) {
-  const newArr: T[][] = []
-  arr.forEach((el) => {
-    newArr.push(el.slice())
-  })
-
-  return newArr
-}
 
 const App: FC = () => {
   const [showPackLoadModal, setShowPackLoadModal] = useState(false)
-  const [packData, setPackData] = useState<IPackData>()
-
-  const [padBtnPressCount, setPadBtnPressCount] = useState<number[][]>(
-    initialPadBtnPressCount
-  )
-  // const [padBtnPressed, setPadBtnPressed] =
-  //   useState<boolean[][]>(initialPadBtnPressed)
-  // const padBtnPressedRef = useRef(padBtnPressed)
-  // padBtnPressedRef.current = padBtnPressed
 
   // new state store
+  const { packData, setPackData } = usePackStore(
+    useShallow((state) => ({
+      packData: state.packData,
+      setPackData: state.setPackData,
+    }))
+  )
+
   const { chain, setChain } = usePadStore(
     useShallow((state) => ({
       chain: state.chain,
@@ -49,12 +28,14 @@ const App: FC = () => {
     }))
   )
 
-  const { markBtnPressed, markBtnReleased } = usePadButtonsStore(
-    useShallow((state) => ({
-      markBtnPressed: state.press,
-      markBtnReleased: state.release,
-    }))
-  )
+  const { markBtnPressed, markBtnReleased, resetAllBtnPressCount } =
+    usePadButtonsStore(
+      useShallow((state) => ({
+        markBtnPressed: state.press,
+        markBtnReleased: state.release,
+        resetAllBtnPressCount: state.resetAllPressCount,
+      }))
+    )
 
   const {
     currentSegment: currentAutoplaySegment,
@@ -84,53 +65,18 @@ const App: FC = () => {
       return
     }
 
-    // const newPadBtnPressed = arrayDeepCopy(padBtnPressedRef.current)
-    // newPadBtnPressed[position.x - 1][position.y - 1] = true
-    // setPadBtnPressed(newPadBtnPressed)
-    markBtnPressed(position.x, position.y)
-
-    // pack이 로드되지 않았으면 빠져나가기
-    if (packData == null) {
-      return
-    }
-    const { mappings, howlers } = packData.sounds
-
-    const key = `${chain} ${position.x} ${position.y}`
-    if (mappings.has(key)) {
-      const pressedCount = padBtnPressCount[position.x - 1][position.y - 1]
-      const thisBtnMappings = mappings.get(key)!
-
-      console.log(position, pressedCount)
-
-      const mapping = thisBtnMappings[pressedCount]
-      const sound = howlers.get(mapping.soundName)
-      sound?.play()
-
-      const nextPressedCount =
-        pressedCount + 1 >= thisBtnMappings.length ? 0 : pressedCount + 1
-      const newPadBtnPressCount = arrayDeepCopy(padBtnPressCount)
-      newPadBtnPressCount[position.x - 1][position.y - 1] = nextPressedCount
-      setPadBtnPressCount(newPadBtnPressCount)
-
-      const t = Date.now()
-      console.log("btn pressed")
-      sound?.once("play", () => console.log("play start", Date.now() - t))
-    }
+    markBtnPressed(position.x, position.y, chain)
   }
 
   const handleBtnRelease = (position: TButtonPosition) => {
     if (position.mc != null) return
-
-    // const newPadBtnPressed = arrayDeepCopy(padBtnPressedRef.current)
-    // newPadBtnPressed[position.x - 1][position.y - 1] = false
-    // setPadBtnPressed(newPadBtnPressed)
 
     markBtnReleased(position.x, position.y)
   }
 
   // pack을 load하거나 chain이 바뀔 때 버튼 누른 횟수 초기화
   useEffect(() => {
-    setPadBtnPressCount(initialPadBtnPressCount)
+    resetAllBtnPressCount()
   }, [packData, chain])
 
   // autoplay segment 처리
