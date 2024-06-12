@@ -6,6 +6,8 @@ const useAutoplay = (data: TAutoplayData[]) => {
   const [idx, setIdx] = useState(0)
   const [playing, setPlaying] = useState(false)
 
+  const [timestamp, setTimestamp] = useState(Date.now())
+
   const playingRef = useRef(playing)
   playingRef.current = playing
 
@@ -25,6 +27,8 @@ const useAutoplay = (data: TAutoplayData[]) => {
 
     console.log(idx, current)
 
+    console.log(`Autoplay diff: ${timestamp} ${Date.now() - timestamp}`)
+
     if (idx >= data.length) {
       setPlaying(false)
       setIdx(0)
@@ -36,6 +40,8 @@ const useAutoplay = (data: TAutoplayData[]) => {
         if (playingRef.current) {
           setIdx(idx + 1)
         }
+
+        setTimestamp(Date.now())
       }, current.delay)
       return () => clearTimeout(timer)
     } else {
