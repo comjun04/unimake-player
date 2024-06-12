@@ -19,12 +19,16 @@ type PackState = {
 }
 
 export const usePackStore = create(
-  immer<PackState>((set) => ({
+  immer<PackState>((set, get) => ({
     packData: undefined,
-    setPackData: (pack) =>
-      set((state) => {
+    setPackData: (pack) => {
+      // destroy all Howl instances
+      get().packData?.sounds.howlers.forEach((howl) => howl.unload())
+
+      return set((state) => {
         state.packData = pack
-      }),
+      })
+    },
   }))
 )
 
