@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react"
+import { FC, useCallback, useEffect } from "react"
 import AutoplayControl from "./components/AutoplayControl"
 import Pad from "./components/Pad"
 import { usePackStore, usePadButtonsStore, usePadStore } from "./store"
@@ -35,25 +35,28 @@ const PlayArea: FC = () => {
     total: autoplayTotalIdx,
   } = useAutoplay(packData?.autoplay ?? [])
 
-  const handleBtnPress = (position: TButtonPosition) => {
-    // console.log(position)
+  const handleBtnPress = useCallback(
+    (position: TButtonPosition) => {
+      // console.log(position)
 
-    // mc button
-    if (position?.mc != null) {
-      if (position.mc !== chain) {
-        setChain(position.mc)
+      // mc button
+      if (position?.mc != null) {
+        if (position.mc !== chain) {
+          setChain(position.mc)
+        }
+        return
       }
-      return
-    }
 
-    markBtnPressed(position.x, position.y, chain)
-  }
+      markBtnPressed(position.x, position.y, chain)
+    },
+    [chain]
+  )
 
-  const handleBtnRelease = (position: TButtonPosition) => {
+  const handleBtnRelease = useCallback((position: TButtonPosition) => {
     if (position.mc != null) return
 
     markBtnReleased(position.x, position.y)
-  }
+  }, [])
 
   // pack을 load하거나 chain이 바뀔 때 버튼 누른 횟수 초기화
   useEffect(() => {
