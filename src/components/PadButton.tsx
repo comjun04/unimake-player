@@ -2,6 +2,7 @@ import { FC, ReactNode } from "react"
 import { TButtonPosition } from "@/types"
 import styles from "@/styles/pad.module.css"
 import { usePadButtonsStore, usePadStore } from "@/store"
+import cn from "@/merge-classnames"
 
 type PadButtonProps = {
   children?: ReactNode
@@ -49,9 +50,12 @@ const PadButton: FC<PadButtonProps> = ({
       onPointerDown={handleButtonPress}
       onPointerUp={handleButtonRelease}
       onPointerOut={handleButtonRelease}
-      className={`border rounded ${
-        mcBtn ? "rounded-full" : "rounded-md"
-      } ${bgColorClassname} ${styles.padButton} aspect-square`}
+      className={cn(
+        "border rounded aspect-square",
+        mcBtn ? "rounded-full" : "rounded-md",
+        bgColorClassname,
+        styles.padButton
+      )}
     >
       <div className={`${styles.padButtonContent}`}>{children}</div>
     </button>

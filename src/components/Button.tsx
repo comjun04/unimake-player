@@ -5,7 +5,11 @@ type ButtonProps = JSX.IntrinsicElements["button"] & {
   variant?: "primary" | "secondary" | "success" | "danger"
 }
 
-const Button: FC<ButtonProps> = ({ variant, className, ...props }) => {
+const Button: FC<ButtonProps> = ({
+  variant = "primary",
+  className,
+  ...props
+}) => {
   let variantClassnames = ""
   if (variant === "primary") {
     variantClassnames =

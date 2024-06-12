@@ -7,8 +7,8 @@ import {
   TransitionChild,
 } from "@headlessui/react"
 import { FC, FormEvent, createRef, useEffect, useState } from "react"
-import { ProgressBar } from "react-bootstrap"
 import Button from "./Button"
+import ProgressBar from "./ProgressBar"
 
 type PackLoadModalProps = {
   show: boolean
@@ -101,8 +101,9 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
                       variant="success"
                     />
                     <ProgressBar
+                      variant="primary"
                       now={packLoadStatus.partCurrent ?? 100}
-                      animated={packLoadStatus.partCurrent == null}
+                      // animated={packLoadStatus.partCurrent == null}
                       max={packLoadStatus.partTotal ?? 100}
                       label={
                         packLoadStatus.partCurrent != null
