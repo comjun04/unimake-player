@@ -101,8 +101,9 @@ function parseKeySound(str: string) {
      * repeat 1 time, goto chain 2
      */
 
-    const match =
-      /^([1-8]) ([1-8]) ([1-8]) ([\w.]+)(?: (\d)(?: ([1-8]))?)?$/.exec(line)
+    const match = /^([1-8]) ([1-8]) ([1-8]) (.+?)(?: (\d)(?: ([1-8]))?)?$/.exec(
+      line
+    )
     if (match == null) {
       throw new Error(`bad keySound syntax on line ${idx}: ${line}`)
     }
