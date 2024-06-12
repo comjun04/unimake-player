@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^2.0.4",
     "@types/howler": "^2.2.11",
     "howler": "^2.2.4",
     "immer": "^10.1.1",

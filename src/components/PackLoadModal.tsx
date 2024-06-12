@@ -1,17 +1,13 @@
 import { IProcessStatus } from "@/hooks/useProcessPack"
-import { FC, FormEvent, createRef, useEffect, useState } from "react"
 import {
-  Button,
-  Form,
-  FormControl,
-  FormGroup,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ProgressBar,
-  Stack,
-} from "react-bootstrap"
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react"
+import { FC, FormEvent, createRef, useEffect, useState } from "react"
+import { ProgressBar } from "react-bootstrap"
 
 type PackLoadModalProps = {
   show: boolean
@@ -22,7 +18,7 @@ type PackLoadModalProps = {
 
 const PackLoadModal: FC<PackLoadModalProps> = ({
   show,
-  handleClose,
+  handleClose = () => {},
   handleLoadPack,
   packLoadStatus,
 }) => {
@@ -51,54 +47,93 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
   }, [show])
 
   return (
-    <Modal
-      show={show}
-      onHide={handleClose}
-      backdrop={packLoading ? "static" : true}
-    >
-      <Form onSubmit={loadFile}>
-        <ModalHeader>Load Pack</ModalHeader>
-        <ModalBody>
-          <Stack direction="vertical" gap={3}>
-            <FormGroup>
-              <FormControl
-                type="file"
-                accept=".zip,.uni"
-                disabled={packLoading}
-                ref={fileInputRef}
-              />
-            </FormGroup>
-            <div>
-              step {packLoadStatus.step}. {packLoadStatus.state}
-            </div>
-            <ProgressBar now={packLoadStatus.step} max={5} variant="success" />
-            <ProgressBar
-              now={packLoadStatus.partCurrent ?? 100}
-              animated={packLoadStatus.partCurrent == null}
-              max={packLoadStatus.partTotal ?? 100}
-              label={
-                packLoadStatus.partCurrent != null
-                  ? `${packLoadStatus.partCurrent} / ${packLoadStatus.partTotal}`
-                  : ""
-              }
-            />
-          </Stack>
-        </ModalBody>
-        <ModalFooter>
-          <Button type="submit" disabled={packLoading}>
-            Load
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={handleClose}
-            disabled={packLoading}
+    <Transition show={show}>
+      <Dialog
+        onClose={handleClose}
+        static={packLoading}
+        className="relative z-50"
+      >
+        <TransitionChild
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+        </TransitionChild>
+
+        <div className="fixed inset-0 flex flex-row w-screen items-center justify-center">
+          <TransitionChild
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
           >
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Form>
-    </Modal>
+            <DialogPanel className="bg-white p-6 rounded-xl">
+              <form
+                className="flex flex-col gap-2"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  loadFile(event)
+                }}
+              >
+                <DialogTitle className="text-xl">Load Pack</DialogTitle>
+                <div>
+                  <div className="flex flex-col gap-3">
+                    <input
+                      type="file"
+                      accept=".zip,.uni"
+                      disabled={packLoading}
+                      ref={fileInputRef}
+                    />
+
+                    <div>
+                      step {packLoadStatus.step}. {packLoadStatus.state}
+                    </div>
+                    <ProgressBar
+                      now={packLoadStatus.step}
+                      max={5}
+                      variant="success"
+                    />
+                    <ProgressBar
+                      now={packLoadStatus.partCurrent ?? 100}
+                      animated={packLoadStatus.partCurrent == null}
+                      max={packLoadStatus.partTotal ?? 100}
+                      label={
+                        packLoadStatus.partCurrent != null
+                          ? `${packLoadStatus.partCurrent} / ${packLoadStatus.partTotal}`
+                          : ""
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-row gap-2">
+                  <button
+                    type="submit"
+                    className="px-3 py-2 bg-blue-500 rounded-lg text-white"
+                    disabled={packLoading}
+                  >
+                    Load
+                  </button>
+                  <button
+                    type="button"
+                    className="px-3 py-2 bg-gray-400 rounded-lg text-white"
+                    onClick={handleClose}
+                    disabled={packLoading}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
+      </Dialog>
+    </Transition>
   )
 }
 
