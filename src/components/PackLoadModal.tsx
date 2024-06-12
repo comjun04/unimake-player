@@ -8,6 +8,7 @@ import {
 } from "@headlessui/react"
 import { FC, FormEvent, createRef, useEffect, useState } from "react"
 import { ProgressBar } from "react-bootstrap"
+import Button from "./Button"
 
 type PackLoadModalProps = {
   show: boolean
@@ -112,21 +113,21 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
                   </div>
                 </div>
                 <div className="flex flex-row gap-2">
-                  <button
+                  <Button
                     type="submit"
-                    className="px-3 py-2 bg-blue-500 rounded-lg text-white"
+                    variant="primary"
                     disabled={packLoading}
                   >
                     Load
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
-                    className="px-3 py-2 bg-gray-400 rounded-lg text-white"
+                    variant="secondary"
                     onClick={handleClose}
                     disabled={packLoading}
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </form>
             </DialogPanel>

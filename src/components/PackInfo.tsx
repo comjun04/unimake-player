@@ -1,4 +1,5 @@
 import { FC } from "react"
+import Button from "./Button"
 
 type PackInfoProps = {
   onLoadPackClick: () => void
@@ -16,12 +17,9 @@ const PackInfo: FC<PackInfoProps> = ({ onLoadPackClick, infoData }) => {
         <li>buttonY: {infoData?.buttonY}</li>
         <li>chain: {infoData?.chain}</li>
       </ul>
-      <button
-        className="bg-blue-500 p-2 rounded-lg text-white hover:bg-blue-600 transition"
-        onClick={onLoadPackClick}
-      >
+      <Button variant="primary" onClick={onLoadPackClick}>
         Load Pack
-      </button>
+      </Button>
     </div>
   )
 }
