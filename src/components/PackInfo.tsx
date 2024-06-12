@@ -1,5 +1,4 @@
 import { FC } from "react"
-import { Button, Card } from "react-bootstrap"
 
 type PackInfoProps = {
   onLoadPackClick: () => void
@@ -8,19 +7,22 @@ type PackInfoProps = {
 
 const PackInfo: FC<PackInfoProps> = ({ onLoadPackClick, infoData }) => {
   return (
-    <Card className="mb-2">
-      <Card.Body>
-        <Card.Title as="h5">Pack Information</Card.Title>
-        <ul>
-          <li>Title: {infoData?.title}</li>
-          <li>Producer Name: {infoData?.producerName}</li>
-          <li>buttonX: {infoData?.buttonX}</li>
-          <li>buttonY: {infoData?.buttonY}</li>
-          <li>chain: {infoData?.chain}</li>
-        </ul>
-        <Button onClick={onLoadPackClick}>Load Pack</Button>
-      </Card.Body>
-    </Card>
+    <div className="flex flex-col gap-2 px-3 py-2 border border-gray-400 rounded-lg">
+      <h4 className="text-xl">Pack Information</h4>
+      <ul>
+        <li>Title: {infoData?.title}</li>
+        <li>Producer Name: {infoData?.producerName}</li>
+        <li>buttonX: {infoData?.buttonX}</li>
+        <li>buttonY: {infoData?.buttonY}</li>
+        <li>chain: {infoData?.chain}</li>
+      </ul>
+      <button
+        className="bg-blue-500 p-2 rounded-lg text-white hover:bg-blue-600 transition"
+        onClick={onLoadPackClick}
+      >
+        Load Pack
+      </button>
+    </div>
   )
 }
 

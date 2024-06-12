@@ -38,7 +38,6 @@ const PadButton: FC<PadButtonProps> = ({
     onRelease?.(position)
   }
 
-  const roundClassname = mcBtn ? "rounded-circle" : "rounded"
   const bgColorClassname = shouldShowSelectedChain
     ? styles.padButtonMCSelectedBg
     : !mcBtn && pressed
@@ -50,11 +49,11 @@ const PadButton: FC<PadButtonProps> = ({
       onPointerDown={handleButtonPress}
       onPointerUp={handleButtonRelease}
       onPointerOut={handleButtonRelease}
-      className={`position-relative border rounded p-0 ${roundClassname} ${bgColorClassname} ${styles.padButton}`}
+      className={`border rounded ${
+        mcBtn ? "rounded-full" : "rounded-md"
+      } ${bgColorClassname} ${styles.padButton} aspect-square`}
     >
-      <div className={`position-absolute ${styles.padButtonContent}`}>
-        {children}
-      </div>
+      <div className={`${styles.padButtonContent}`}>{children}</div>
     </button>
   )
 }

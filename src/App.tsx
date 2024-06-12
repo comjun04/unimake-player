@@ -1,22 +1,14 @@
 import { FC, useState } from "react"
-import { Container } from "react-bootstrap"
-import PackInfo from "@/components/PackInfo"
 import { IPackData } from "./hooks/useProcessPack"
 import PackLoadWrapper from "./components/PackLoadWrapper"
 import { usePackStore } from "./store"
-import { useShallow } from "zustand/react/shallow"
-import PlayArea from "./PlayArea"
+import MainArea from "./MainArea"
 
 const App: FC = () => {
   const [showPackLoadModal, setShowPackLoadModal] = useState(false)
 
   // new state store
-  const { packData, setPackData } = usePackStore(
-    useShallow((state) => ({
-      packData: state.packData,
-      setPackData: state.setPackData,
-    }))
-  )
+  const setPackData = usePackStore((state) => state.setPackData)
 
   const handlePackLoadComplete = (data: IPackData) => {
     if (data != null) {
@@ -27,13 +19,9 @@ const App: FC = () => {
 
   return (
     <>
-      <Container>
-        <PackInfo
-          onLoadPackClick={() => setShowPackLoadModal(true)}
-          infoData={packData?.info ?? {}}
-        />
-        <PlayArea />
-      </Container>
+      <div className="w-full max-w-screen-sm lg:max-w-full h-full mx-auto">
+        <MainArea setShowPackLoadModal={setShowPackLoadModal} />
+      </div>
       <PackLoadWrapper
         showModal={showPackLoadModal}
         handleModalClose={() => setShowPackLoadModal(false)}

@@ -5,8 +5,13 @@ import { usePackStore, usePadButtonsStore, usePadStore } from "./store"
 import { useShallow } from "zustand/react/shallow"
 import useAutoplay from "./hooks/useAutoplay"
 import { TButtonPosition } from "./types"
+import PackInfo from "./components/PackInfo"
 
-const PlayArea: FC = () => {
+type PlayAreaProps = {
+  setShowPackLoadModal: (value: boolean) => void
+}
+
+const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
   const packData = usePackStore((state) => state.packData)
 
   const { chain, setChain } = usePadStore(
@@ -106,17 +111,26 @@ const PlayArea: FC = () => {
   }, [currentAutoplaySegment])
 
   return (
-    <>
-      <AutoplayControl
-        playing={autoplaying}
-        onPlay={startAutoplay}
-        onPause={stopAutoplay}
-        onStop={resetAutoplay}
-        now={autoplayNowIdx}
-        total={autoplayTotalIdx}
-      />
-      <Pad onBtnPress={handleBtnPress} onBtnRelease={handleBtnRelease} />
-    </>
+    <div className="flex flex-col lg:flex-row gap-2 w-full p-2">
+      <div className="flex flex-col gap-2 lg:max-w-[30vw]">
+        <PackInfo
+          onLoadPackClick={() => setShowPackLoadModal(true)}
+          infoData={packData?.info ?? {}}
+        />
+        <AutoplayControl
+          playing={autoplaying}
+          onPlay={startAutoplay}
+          onPause={stopAutoplay}
+          onStop={resetAutoplay}
+          now={autoplayNowIdx}
+          total={autoplayTotalIdx}
+        />
+      </div>
+
+      <div className="grow">
+        <Pad onBtnPress={handleBtnPress} onBtnRelease={handleBtnRelease} />
+      </div>
+    </div>
   )
 }
 
