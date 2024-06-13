@@ -3,6 +3,9 @@ import { TButtonPosition } from "@/types"
 import styles from "@/styles/pad.module.css"
 import { usePadButtonsStore, usePadStore } from "@/store"
 import cn from "@/merge-classnames"
+import { useShallow } from "zustand/react/shallow"
+
+import "@/styles/colors.css"
 
 type PadButtonProps = {
   children?: ReactNode
@@ -21,13 +24,16 @@ const PadButton: FC<PadButtonProps> = ({
 }) => {
   const currentChain = usePadStore((state) => state.chain)
 
-  const pressed = usePadButtonsStore((state) => {
-    if ("mc" in position) {
-      return false
-    }
+  const { pressed, color } = usePadButtonsStore(
+    useShallow((state) => {
+      if ("mc" in position) {
+        return { pressed: false, color: 0 }
+      }
 
-    return state.getButton(position.x, position.y).pressed
-  })
+      const btnData = state.getButton(position.x, position.y)
+      return { pressed: btnData.pressed, color: btnData.color }
+    })
+  )
 
   const shouldShowSelectedChain =
     "mc" in position && position.mc === currentChain
@@ -43,7 +49,7 @@ const PadButton: FC<PadButtonProps> = ({
     ? styles.padButtonMCSelectedBg
     : !mcBtn && pressed
     ? styles.padButtonPressedBg
-    : ""
+    : `bgcolor-${color}`
 
   return (
     <button

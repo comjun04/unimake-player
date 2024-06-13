@@ -1,13 +1,16 @@
 import { create } from "zustand"
 import { immer } from "zustand/middleware/immer"
 import { IPackData } from "./hooks/useProcessPack"
+import LEDRunner from "./LEDRunner"
 
 const initialPadButtons: PadButtonsStateItem[][] =
   Array<PadButtonsStateItem[]>(8)
 for (let i = 0; i < 8; i++) {
   initialPadButtons[i] = Array<PadButtonsStateItem>(8).fill({
     pressed: false,
-    pressCount: 0,
+    nextSoundMappingIdx: 0,
+    nextLedMappingIdx: 0,
+    color: 0,
   })
 }
 
@@ -53,7 +56,9 @@ export const usePadStore = create(
 
 type PadButtonsStateItem = {
   pressed: boolean
-  pressCount: number
+  nextSoundMappingIdx: number
+  nextLedMappingIdx: number
+  color: number
 }
 
 type PadButtonsState = {
@@ -61,6 +66,7 @@ type PadButtonsState = {
   getButton: (x: number, y: number) => PadButtonsStateItem
   press: (x: number, y: number, chain: number) => void
   release: (x: number, y: number) => void
+  setColor: (x: number, y: number, color: number) => void
   resetAllPressCount: () => void
 }
 
@@ -80,23 +86,56 @@ export const usePadButtonsStore = create(
         if (packData == null) return
 
         const key = `${chain} ${x} ${y}`
-        const mappings = packData.sounds.mappings.get(key)
-        if (mappings == null) return
+        const soundMappings = packData.sounds.mappings.get(key)
+        if (soundMappings != null) {
+          console.log({ x, y }, btnData.nextSoundMappingIdx)
 
-        console.log({ x, y }, btnData.pressCount)
+          const currentMapping = soundMappings[btnData.nextSoundMappingIdx]
+          if (currentMapping != null) {
+            const sound = packData.sounds.howlers.get(currentMapping.soundName)
 
-        const currentMapping = mappings[btnData.pressCount]
-        const sound = packData.sounds.howlers.get(currentMapping.soundName)
+            const t = Date.now()
+            console.log("btn pressed")
+            sound?.once("play", () => console.log("play start", Date.now() - t))
+            sound?.play()
+          }
 
-        const t = Date.now()
-        console.log("btn pressed")
-        sound?.once("play", () => console.log("play start", Date.now() - t))
-        sound?.play()
+          if (btnData.nextSoundMappingIdx + 1 >= soundMappings?.length) {
+            btnData.nextSoundMappingIdx = 0
+          } else {
+            btnData.nextSoundMappingIdx += 1
+          }
+        }
 
-        if (btnData.pressCount + 1 >= mappings.length) {
-          btnData.pressCount = 0
-        } else {
-          btnData.pressCount += 1
+        const ledMappings = packData.keyLED[key]
+        if (ledMappings != null) {
+          const currentMapping = ledMappings[btnData.nextLedMappingIdx]
+          if (currentMapping != null) {
+            const setColor = get().setColor
+
+            const ledRunner = new LEDRunner(currentMapping)
+            ledRunner.run((changes) => {
+              for (const segment of changes) {
+                if (segment.type === "on") {
+                  // TODO
+                  if ("mc" in segment) continue
+
+                  setColor(segment.x, segment.y, segment.color)
+                } else if (segment.type === "off") {
+                  // TODO
+                  if ("mc" in segment) continue
+
+                  setColor(segment.x, segment.y, 0)
+                }
+              }
+            })
+          }
+
+          if (btnData.nextLedMappingIdx + 1 >= ledMappings.length) {
+            btnData.nextLedMappingIdx = 0
+          } else {
+            btnData.nextLedMappingIdx += 1
+          }
         }
       }),
     release: (x, y) =>
@@ -104,11 +143,16 @@ export const usePadButtonsStore = create(
         const btnData = state.padButtons[x - 1][y - 1]
         btnData.pressed = false
       }),
+    setColor: (x, y, color) =>
+      set((state) => {
+        state.padButtons[x - 1][y - 1].color = color
+      }),
     resetAllPressCount: () =>
       set((state) => {
         for (const row of state.padButtons) {
           for (const btnData of row) {
-            btnData.pressCount = 0
+            btnData.nextSoundMappingIdx = 0
+            btnData.nextLedMappingIdx = 0
           }
         }
       }),

@@ -58,18 +58,16 @@ export type TKeyLEDSegment =
 export type TKeyLEDDataUnsorted = Record<
   string,
   {
+    multiMappingLetter: string
     repeat: number
-    mappings: {
-      multiMappingLetter: string
-      segments: TKeyLEDSegment[]
-    }[]
-  }
+    segments: TKeyLEDSegment[]
+  }[]
 >
 
 export type TKeyLEDData = Record<
   string,
   {
     repeat: number
-    segments: TKeyLEDSegment[][]
-  }
+    segments: TKeyLEDSegment[]
+  }[]
 >

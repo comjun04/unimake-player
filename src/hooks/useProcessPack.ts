@@ -22,6 +22,7 @@ export interface IPackData {
     howlers: Map<string, Howl>
   }
   autoplay: TAutoplayData[]
+  keyLED: TKeyLEDData
 }
 
 interface IKeySoundData {
@@ -190,7 +191,7 @@ function parseKeyLED(str: string) {
     const regex = keyledRegex.get(mode)!
     const match = regex.exec(line)
     if (!match) {
-      throw new Error(`unknown autoplay syntax on line ${lineNo}: ${line}`)
+      throw new Error(`unknown keyLED syntax on line ${lineNo}: ${line}`)
     }
 
     switch (mode) {
@@ -455,12 +456,13 @@ const useProcessPack = () => {
       const [_, chain, x, y, repeat, multiMappingLetter] = match
       const keyledBtnLocation = `${chain} ${x} ${y}`
 
+      console.log(keyledBtnLocation)
       const keyledStr = await keyledFile.async("string")
       const keyledSegments = parseKeyLED(keyledStr)
 
       if (keyledBtnLocation in keyledData) {
         if (
-          keyledData[keyledBtnLocation].mappings.some(
+          keyledData[keyledBtnLocation].some(
             (mapping) => mapping.multiMappingLetter === multiMappingLetter
           )
         ) {
@@ -469,20 +471,19 @@ const useProcessPack = () => {
           )
         }
 
-        keyledData[keyledBtnLocation].mappings.push({
+        keyledData[keyledBtnLocation].push({
           multiMappingLetter,
+          repeat: parseInt(repeat),
           segments: keyledSegments,
         })
       } else {
-        keyledData[keyledBtnLocation] = {
-          repeat: parseInt(repeat),
-          mappings: [
-            {
-              multiMappingLetter,
-              segments: keyledSegments,
-            },
-          ],
-        }
+        keyledData[keyledBtnLocation] = [
+          {
+            multiMappingLetter,
+            repeat: parseInt(repeat),
+            segments: keyledSegments,
+          },
+        ]
       }
     }
 
@@ -491,15 +492,12 @@ const useProcessPack = () => {
       const keyledBtn = keyledData[keyledBtnLocation]
 
       // TODO: multiMappingLetter가 a, c, f, h... 같이 중간에 비어있는게 있으면 오류나야하는지 무시해야하는지 알아내기
-      const sorted = keyledBtn.mappings.sort(
+      const sorted = keyledBtn.sort(
         (a, b) =>
           a.multiMappingLetter.charCodeAt(0) -
           b.multiMappingLetter.charCodeAt(0)
       )
-      keyledDataWithMappingsSorted[keyledBtnLocation] = {
-        repeat: keyledBtn.repeat,
-        segments: sorted.map((d) => d.segments),
-      }
+      keyledDataWithMappingsSorted[keyledBtnLocation] = sorted
     }
     console.log(keyledDataWithMappingsSorted)
 
