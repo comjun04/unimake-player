@@ -1,7 +1,12 @@
 import { useState } from "react"
 import JSZip from "jszip"
 import { Howl } from "howler"
-import type { TAutoplayData } from "@/types"
+import type {
+  TAutoplayData,
+  TKeyLEDData,
+  TKeyLEDDataUnsorted,
+  TKeyLEDSegment,
+} from "@/types"
 
 export interface IProcessStatus {
   step: number
@@ -17,6 +22,7 @@ export interface IPackData {
     howlers: Map<string, Howl>
   }
   autoplay: TAutoplayData[]
+  keyLED: TKeyLEDData
 }
 
 interface IKeySoundData {
@@ -47,6 +53,14 @@ const autoplayRegex = new Map([
   ["off", /^(?:of)?f ([1-8]) ([1-8])$/],
   ["touch", /^t(?:ouch)? ([1-8]) ([1-8])$/],
   ["delay", /^d(?:elay)? (\d+)$/],
+])
+
+const keyledFileRegex = /^keyLED\/([1-8]) ([1-8]) ([1-8]) (\d+)(?: ([a-z]))?$/
+const keyledRegex = new Map([
+  ["chain", /^c(?:hain)? ([1-8])/],
+  ["on", /^on? (?:([1-8]) ([1-8])|mc (\d+)|l) a(?:uto)? (\d+)$/],
+  ["off", /^(?:of)?f (?:([1-8]) ([1-8])|mc (\d+))$/],
+  ["delay", /^d(?:elay)? (\d+)/],
 ])
 
 function findAvailableFile(zip: JSZip, fileNames: string[]) {
@@ -151,6 +165,120 @@ function loadSound(name: string, file: Blob) {
       reject(new Error(`failed to load sound '${name}': ${err}`))
     })
   })
+}
+
+function parseKeyLED(str: string) {
+  const data: TKeyLEDSegment[] = []
+
+  const lines = str.split("\n")
+  lines.forEach((l, lineNo) => {
+    const line = l.trim()
+    if (line.length < 1) return
+
+    let mode = ""
+    if (line.startsWith("c ") || line.startsWith("chain ")) {
+      mode = "chain"
+    } else if (line.startsWith("o ") || line.startsWith("on ")) {
+      mode = "on"
+    } else if (line.startsWith("f ") || line.startsWith("off ")) {
+      mode = "off"
+    } else if (line.startsWith("d ") || line.startsWith("delay ")) {
+      mode = "delay"
+    } else {
+      console.error(`unknown keyLED syntax on line ${lineNo}: ${line}`)
+      return
+    }
+
+    const regex = keyledRegex.get(mode)!
+    const match = regex.exec(line)
+    if (!match) {
+      console.error(`unknown keyLED syntax on line ${lineNo}: ${line}`)
+      return
+    }
+
+    switch (mode) {
+      case "chain": {
+        const [_, chain] = match
+        data.push({
+          type: "chain",
+          chain: parseInt(chain),
+        })
+        break
+      }
+
+      case "delay": {
+        const [_, delay] = match
+        data.push({
+          type: "delay",
+          delay: parseInt(delay),
+        })
+        break
+      }
+
+      case "on": {
+        const [_, x, y, mcBtn, color] = match
+
+        if (mcBtn == null && x == null && y == null) {
+          // o l * * // l - logo (top right)
+          data.push({
+            type: "on",
+            locationType: "logo",
+            color: parseInt(color),
+          })
+          break
+        }
+
+        if (mcBtn != null) {
+          data.push({
+            type: "on",
+            locationType: "mc",
+            mc: parseInt(mcBtn),
+            color: parseInt(color),
+          })
+        } else {
+          data.push({
+            type: "on",
+            locationType: "xy",
+            x: parseInt(x),
+            y: parseInt(y),
+            color: parseInt(color),
+          })
+        }
+
+        break
+      }
+
+      case "off": {
+        const [_, x, y, mcBtn] = match
+
+        if (mcBtn == null && x == null && y == null) {
+          // o l * * // l - logo (top right)
+          data.push({
+            type: "off",
+            locationType: "logo",
+          })
+          break
+        }
+
+        if (mcBtn != null) {
+          data.push({
+            type: "off",
+            locationType: "mc",
+            mc: parseInt(mcBtn),
+          })
+        } else {
+          data.push({
+            type: "off",
+            locationType: "xy",
+            x: parseInt(x),
+            y: parseInt(y),
+          })
+        }
+      }
+    }
+  })
+
+  return data
 }
 
 function parseAutoplay(str: string) {
@@ -320,10 +448,88 @@ const useProcessPack = () => {
     }
 
     // TODO: loading LED
-
-    // 5. parse 'autoPlay' file
     setStatus({
       step: 5,
+      state: "parse_keyLEDs",
+    })
+    const keyledData: TKeyLEDDataUnsorted = {}
+
+    const keyledFolder = zip.folder("keyLED/")
+    if (!keyledFolder) {
+      throw new Error("`keyLED` folder does not exist")
+    }
+
+    const keyledFiles: JSZip.JSZipObject[] = []
+    keyledFolder.forEach((_filename, file) => {
+      if (file.dir) return
+      keyledFiles.push(file)
+    })
+
+    let keyledLoadingPartCurrent = 0
+    for await (const keyledFile of keyledFiles) {
+      setStatus({
+        step: 5,
+        state: "parse_keyLEDs",
+        partCurrent: ++keyledLoadingPartCurrent,
+        partTotal: keyledFiles.length,
+      })
+
+      const match = keyledFileRegex.exec(keyledFile.name)
+      if (match == null) {
+        console.warn("wrong keyLED file name: " + keyledFile.name)
+        continue
+      }
+
+      const [_, chain, x, y, repeat, multiMappingLetter] = match
+      const keyledBtnLocation = `${chain} ${x} ${y}`
+
+      const keyledStr = await keyledFile.async("string")
+      const keyledSegments = parseKeyLED(keyledStr)
+
+      if (keyledBtnLocation in keyledData) {
+        if (
+          keyledData[keyledBtnLocation].some(
+            (mapping) => mapping.multiMappingLetter === multiMappingLetter
+          )
+        ) {
+          throw new Error(
+            `found duplicate multiMapping letter ${multiMappingLetter} in keyLED location ${keyledBtnLocation}`
+          )
+        }
+
+        keyledData[keyledBtnLocation].push({
+          multiMappingLetter,
+          repeat: parseInt(repeat),
+          segments: keyledSegments,
+        })
+      } else {
+        keyledData[keyledBtnLocation] = [
+          {
+            multiMappingLetter,
+            repeat: parseInt(repeat),
+            segments: keyledSegments,
+          },
+        ]
+      }
+    }
+
+    const keyledDataWithMappingsSorted: TKeyLEDData = {}
+    for (const keyledBtnLocation in keyledData) {
+      const keyledBtn = keyledData[keyledBtnLocation]
+
+      // TODO: multiMappingLetter가 a, c, f, h... 같이 중간에 비어있는게 있으면 오류나야하는지 무시해야하는지 알아내기
+      const sorted = keyledBtn.sort(
+        (a, b) =>
+          a.multiMappingLetter.charCodeAt(0) -
+          b.multiMappingLetter.charCodeAt(0)
+      )
+      keyledDataWithMappingsSorted[keyledBtnLocation] = sorted
+    }
+    console.log(keyledDataWithMappingsSorted)
+
+    // 6. parse 'autoPlay' file
+    setStatus({
+      step: 6,
       state: "parse_autoPlay",
     })
 
@@ -353,6 +559,7 @@ const useProcessPack = () => {
         mappings: keySoundData.mappings,
         howlers: soundObjects,
       },
+      keyLED: keyledDataWithMappingsSorted,
       autoplay: autoplayData,
     }
   }
