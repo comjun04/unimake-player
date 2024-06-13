@@ -483,7 +483,6 @@ const useProcessPack = () => {
       const [_, chain, x, y, repeat, multiMappingLetter] = match
       const keyledBtnLocation = `${chain} ${x} ${y}`
 
-      console.log(keyledBtnLocation)
       const keyledStr = await keyledFile.async("string")
       const keyledSegments = parseKeyLED(keyledStr)
 
