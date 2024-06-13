@@ -52,7 +52,7 @@ const autoplayRegex = new Map([
   ["on", /^on? ([1-8]) ([1-8])$/],
   ["off", /^(?:of)?f ([1-8]) ([1-8])$/],
   ["touch", /^t(?:ouch)? ([1-8]) ([1-8])$/],
-  ["delay", /^d(?:elay)? (\d+)$/],
+  ["delay", /^d(?:elay)? (-?\d+)$/],
 ])
 
 const keyledFileRegex = /^keyLED\/([1-8]) ([1-8]) ([1-8]) (\d+)(?: ([a-z]))?$/
@@ -60,7 +60,7 @@ const keyledRegex = new Map([
   ["chain", /^c(?:hain)? ([1-8])/],
   ["on", /^on? (?:([1-8]) ([1-8])|mc (\d+)|l) a(?:uto)? (\d+)$/],
   ["off", /^(?:of)?f (?:([1-8]) ([1-8])|mc (\d+))$/],
-  ["delay", /^d(?:elay)? (\d+)/],
+  ["delay", /^d(?:elay)? (-?\d+)/],
 ])
 
 function findAvailableFile(zip: JSZip, fileNames: string[]) {
@@ -208,9 +208,18 @@ function parseKeyLED(str: string) {
 
       case "delay": {
         const [_, delay] = match
+        let parsedDelay = parseInt(delay)
+
+        if (parsedDelay < 0) {
+          console.warn(
+            `keyLED line ${lineNo}: delay lower than 0, assuming to 0. | raw: ${line}`
+          )
+          parsedDelay = 0
+        }
+
         data.push({
           type: "delay",
-          delay: parseInt(delay),
+          delay: parsedDelay,
         })
         break
       }
@@ -322,9 +331,18 @@ function parseAutoplay(str: string) {
 
       case "delay": {
         const [_, delay] = match
+        let parsedDelay = parseInt(delay)
+
+        if (parsedDelay < 0) {
+          console.warn(
+            `autoplay line ${lineNo}: delay lower than 0, assuming to 0. | raw: ${line}`
+          )
+          parsedDelay = 0
+        }
+
         data.push({
           type: "delay",
-          delay: parseInt(delay),
+          delay: parsedDelay,
         })
         break
       }
