@@ -185,13 +185,15 @@ function parseKeyLED(str: string) {
     } else if (line.startsWith("d ") || line.startsWith("delay ")) {
       mode = "delay"
     } else {
-      throw new Error(`unknown keyLED syntax on line ${lineNo}: ${line}`)
+      console.error(`unknown keyLED syntax on line ${lineNo}: ${line}`)
+      return
     }
 
     const regex = keyledRegex.get(mode)!
     const match = regex.exec(line)
     if (!match) {
-      throw new Error(`unknown keyLED syntax on line ${lineNo}: ${line}`)
+      console.error(`unknown keyLED syntax on line ${lineNo}: ${line}`)
+      return
     }
 
     switch (mode) {
