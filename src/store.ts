@@ -28,6 +28,9 @@ export const usePackStore = create(
       // destroy all Howl instances
       get().packData?.sounds.howlers.forEach((howl) => howl.unload())
 
+      // reset all button colors
+      usePadButtonsStore.getState().resetAllColors()
+
       return set((state) => {
         state.packData = pack
       })
@@ -68,6 +71,7 @@ type PadButtonsState = {
   release: (x: number, y: number) => void
   setColor: (x: number, y: number, color: number) => void
   resetAllPressCount: () => void
+  resetAllColors: () => void
 }
 
 export const usePadButtonsStore = create(
@@ -153,6 +157,14 @@ export const usePadButtonsStore = create(
           for (const btnData of row) {
             btnData.nextSoundMappingIdx = 0
             btnData.nextLedMappingIdx = 0
+          }
+        }
+      }),
+    resetAllColors: () =>
+      set((state) => {
+        for (const row of state.padButtons) {
+          for (const btnData of row) {
+            btnData.color = 0
           }
         }
       }),
