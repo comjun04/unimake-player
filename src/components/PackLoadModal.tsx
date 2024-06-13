@@ -74,7 +74,7 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <DialogPanel className="bg-white p-6 rounded-xl">
+            <DialogPanel className="bg-white p-6 rounded-xl bg-gray-800">
               <form
                 className="flex flex-col gap-2"
                 onSubmit={(event) => {
