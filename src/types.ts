@@ -36,23 +36,36 @@ export type TKeyLEDSegment =
     }
   | {
       type: "on"
+      locationType: "xy"
       x: number
       y: number
       color: number
     }
   | {
       type: "on"
+      locationType: "mc"
       mc: number
       color: number
     }
   | {
+      type: "on"
+      locationType: "logo"
+      color: number
+    }
+  | {
       type: "off"
+      locationType: "xy"
       x: number
       y: number
     }
   | {
       type: "off"
+      locationType: "mc"
       mc: number
+    }
+  | {
+      type: "off"
+      locationType: "logo"
     }
 
 export type TKeyLEDDataUnsorted = Record<

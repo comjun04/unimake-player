@@ -117,13 +117,13 @@ export const usePadButtonsStore = create(
             ledRunner.run((changes) => {
               for (const segment of changes) {
                 if (segment.type === "on") {
-                  // TODO
-                  if ("mc" in segment) continue
+                  // TODO: mc and logo color
+                  if (segment.locationType !== "xy") continue
 
                   setColor(segment.x, segment.y, segment.color)
                 } else if (segment.type === "off") {
-                  // TODO
-                  if ("mc" in segment) continue
+                  // TODO: mc and logo color
+                  if (segment.locationType !== "xy") continue
 
                   setColor(segment.x, segment.y, 0)
                 }

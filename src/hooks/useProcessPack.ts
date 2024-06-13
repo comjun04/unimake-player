@@ -58,7 +58,7 @@ const autoplayRegex = new Map([
 const keyledFileRegex = /^keyLED\/([1-8]) ([1-8]) ([1-8]) (\d+)(?: ([a-z]))?$/
 const keyledRegex = new Map([
   ["chain", /^c(?:hain)? ([1-8])/],
-  ["on", /^on? (?:([1-8]) ([1-8])|mc (\d+)) a(?:uto)? (\d+)$/],
+  ["on", /^on? (?:([1-8]) ([1-8])|mc (\d+)|l) a(?:uto)? (\d+)$/],
   ["off", /^(?:of)?f (?:([1-8]) ([1-8])|mc (\d+))$/],
   ["delay", /^d(?:elay)? (\d+)$/],
 ])
@@ -215,15 +215,28 @@ function parseKeyLED(str: string) {
 
       case "on": {
         const [_, x, y, mcBtn, color] = match
+
+        if (mcBtn == null && x == null && y == null) {
+          // o l * * // l - logo (top right)
+          data.push({
+            type: "on",
+            locationType: "logo",
+            color: parseInt(color),
+          })
+          break
+        }
+
         if (mcBtn != null) {
           data.push({
             type: "on",
+            locationType: "mc",
             mc: parseInt(mcBtn),
             color: parseInt(color),
           })
         } else {
           data.push({
             type: "on",
+            locationType: "xy",
             x: parseInt(x),
             y: parseInt(y),
             color: parseInt(color),
@@ -235,14 +248,26 @@ function parseKeyLED(str: string) {
 
       case "off": {
         const [_, x, y, mcBtn] = match
+
+        if (mcBtn == null && x == null && y == null) {
+          // o l * * // l - logo (top right)
+          data.push({
+            type: "off",
+            locationType: "logo",
+          })
+          break
+        }
+
         if (mcBtn != null) {
           data.push({
             type: "off",
+            locationType: "mc",
             mc: parseInt(mcBtn),
           })
         } else {
           data.push({
             type: "off",
+            locationType: "xy",
             x: parseInt(x),
             y: parseInt(y),
           })
