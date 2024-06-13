@@ -1,7 +1,7 @@
 .pad {
   display: grid;
   grid-template-columns: repeat(9, minmax(0, 1fr));
-  gap: 1px;
+  gap: 2px;
 
   /* width: 100%; */
   /* min-height: 100%; */
