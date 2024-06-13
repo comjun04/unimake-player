@@ -28,6 +28,11 @@ export default class LEDRunner {
         changes.push(segment)
       }
     }
+
+    // 남은 led 변경사항 업데이트
+    if (changes.length > 0) {
+      onUpdate(changes.slice())
+    }
   }
 
   private calibratedDelay(time: number) {
