@@ -60,7 +60,7 @@ const keyledRegex = new Map([
   ["chain", /^c(?:hain)? ([1-8])/],
   ["on", /^on? (?:([1-8]) ([1-8])|mc (\d+)|l) a(?:uto)? (\d+)$/],
   ["off", /^(?:of)?f (?:([1-8]) ([1-8])|mc (\d+))$/],
-  ["delay", /^d(?:elay)? (\d+)$/],
+  ["delay", /^d(?:elay)? (\d+)/],
 ])
 
 function findAvailableFile(zip: JSZip, fileNames: string[]) {
