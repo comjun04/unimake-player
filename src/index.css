@@ -5,6 +5,8 @@
 body {
   margin: 0;
   padding: 0;
+
+  @apply bg-gray-800 text-white;
 }
 
 body,

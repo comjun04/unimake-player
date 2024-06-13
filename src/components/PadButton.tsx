@@ -57,7 +57,7 @@ const PadButton: FC<PadButtonProps> = ({
       onPointerUp={handleButtonRelease}
       onPointerOut={handleButtonRelease}
       className={cn(
-        "border rounded aspect-square",
+        "rounded aspect-square",
         mcBtn ? "rounded-full" : "rounded-md",
         bgColorClassname,
         styles.padButton
