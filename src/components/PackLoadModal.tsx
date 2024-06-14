@@ -40,6 +40,11 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
     handleLoadPack(file)
   }
 
+  const internalHandleClose = () => {
+    if (packLoading) return
+    handleClose()
+  }
+
   // dialog 숨길 때 로딩중 상태 해제 (버튼 입력 다시 가능해짐)
   useEffect(() => {
     if (!show) {
@@ -49,11 +54,7 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
 
   return (
     <Transition show={show}>
-      <Dialog
-        onClose={handleClose}
-        static={packLoading}
-        className="relative z-50"
-      >
+      <Dialog onClose={internalHandleClose} className="relative z-50">
         <TransitionChild
           enter="ease-out duration-300"
           enterFrom="opacity-0"
