@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from "react"
+import { FC, memo, useCallback, useEffect } from "react"
 import AutoplayControl from "./components/AutoplayControl"
 import Pad from "./components/Pad"
 import { usePackStore, usePadButtonsStore, usePadStore } from "./store"
@@ -8,6 +8,9 @@ import { TButtonPosition } from "./types"
 import PackInfo from "./components/PackInfo"
 import SettingsPanel from "./components/SettingsPanel"
 import InfoPanel from "./components/InfoPanel"
+
+const MemoizedSettingsPanel = memo(SettingsPanel)
+const MemoizedInfoPanel = memo(InfoPanel)
 
 type PlayAreaProps = {
   setShowPackLoadModal: (value: boolean) => void
@@ -127,8 +130,8 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
           now={autoplayNowIdx}
           total={autoplayTotalIdx}
         />
-        <SettingsPanel />
-        <InfoPanel />
+        <MemoizedSettingsPanel />
+        <MemoizedInfoPanel />
       </div>
 
       <div className="grow max-w-[100vh]">
