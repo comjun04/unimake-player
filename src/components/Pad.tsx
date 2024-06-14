@@ -1,7 +1,6 @@
-import { FC, ReactElement, ReactFragment, memo } from "react"
+import { FC, ReactElement, memo } from "react"
 import PadButton from "./PadButton"
 import { TButtonPosition } from "@/types"
-import styles from "@/styles/pad.module.css"
 import { usePadStore } from "@/store"
 import cn from "@/merge-classnames"
 
