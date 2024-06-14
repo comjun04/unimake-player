@@ -57,13 +57,12 @@ const PadButton: FC<PadButtonProps> = ({
       onPointerUp={handleButtonRelease}
       onPointerOut={handleButtonRelease}
       className={cn(
-        "rounded aspect-square",
+        "rounded aspect-square overflow-hidden",
         mcBtn ? "rounded-full" : "rounded-md",
-        bgColorClassname,
         styles.padButton
       )}
     >
-      <div className={`${styles.padButtonContent}`}>{children}</div>
+      <div className={cn("w-full h-full", bgColorClassname)}>{children}</div>
     </button>
   )
 }
