@@ -118,6 +118,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
   return (
     <div className="flex flex-col lg:flex-row gap-2 w-full p-2 h-full">
       <div className="flex flex-col gap-2 lg:w-[30vw]">
+        <MemoizedInfoPanel />
         <PackInfo
           onLoadPackClick={() => setShowPackLoadModal(true)}
           infoData={packData?.info ?? {}}
@@ -131,7 +132,6 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
           total={autoplayTotalIdx}
         />
         <MemoizedSettingsPanel />
-        <MemoizedInfoPanel />
       </div>
 
       <div className="grow max-w-[100vh]">
