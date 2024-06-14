@@ -6,7 +6,7 @@ const InfoPanel: FC = () => {
       <h3 className="text-2xl">UniMake Player</h3>
       <span>Web based Unipack player</span>
 
-      <div className="mt-4 flex flex-row gap-2">
+      <div className="mt-4 flex min-[320px]:flex-row flex-col gap-1">
         <span className="flex flex-row gap-1">
           commit:
           <code className="font-mono bg-zinc-700 py-0.5 px-1 rounded-sm text-sm">

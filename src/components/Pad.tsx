@@ -55,7 +55,11 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
     }
   }
 
-  return <div className={styles.pad}>{buttons}</div>
+  return (
+    <div className="grid grid-cols-9 gap-[2px] sm:gap-[4px] content-stretch">
+      {buttons}
+    </div>
+  )
 }
 
 export default Pad
