@@ -26,8 +26,9 @@ const PadButton: FC<PadButtonProps> = ({
 
   const { pressed, color, showPressedFeedback } = usePadButtonsStore(
     useShallow((state) => {
-      if ("mc" in position) {
-        return { pressed: false, color: 0 }
+      if ("mc" in position && position.mc != null) {
+        const btnData = state.getMcButton(position.mc)
+        return { pressed: false, color: btnData.color }
       }
 
       const btnData = state.getButton(position.x, position.y)

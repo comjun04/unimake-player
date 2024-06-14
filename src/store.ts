@@ -14,6 +14,13 @@ for (let i = 0; i < 8; i++) {
   })
 }
 
+const initialMcButtons: McButtonsStateItem[] = Array<McButtonsStateItem>(32)
+for (let i = 0; i < 32; i++) {
+  initialMcButtons[i] = {
+    color: 0,
+  }
+}
+
 // =====
 
 type PackState = {
@@ -71,13 +78,20 @@ type PadButtonsStateItem = {
   color: number
 }
 
+type McButtonsStateItem = {
+  color: number
+}
+
 type PadButtonsState = {
   padButtons: PadButtonsStateItem[][]
+  mcButtons: McButtonsStateItem[]
   showPressedFeedback: boolean
   getButton: (x: number, y: number) => PadButtonsStateItem
+  getMcButton: (id: number) => McButtonsStateItem
   press: (x: number, y: number, chain: number) => void
   release: (x: number, y: number) => void
   setColor: (x: number, y: number, color: number) => void
+  setMcButtonColor: (id: number, color: number) => void
   resetAllPressCount: () => void
   resetAllColors: () => void
   setShowPressedFeedback: (show: boolean) => void
@@ -86,9 +100,13 @@ type PadButtonsState = {
 export const usePadButtonsStore = create(
   immer<PadButtonsState>((set, get) => ({
     padButtons: initialPadButtons,
+    mcButtons: initialMcButtons,
     showPressedFeedback: true,
     getButton: (x, y) => {
       return get().padButtons[x - 1][y - 1]
+    },
+    getMcButton: (id) => {
+      return get().mcButtons[id - 1]
     },
     press: (x, y, chain) =>
       set((state) => {
@@ -126,17 +144,26 @@ export const usePadButtonsStore = create(
           const currentMapping = ledMappings[btnData.nextLedMappingIdx]
           if (currentMapping != null) {
             const setColor = get().setColor
+            const setMcButtonColor = get().setMcButtonColor
 
             const ledRunner = new LEDRunner(currentMapping)
             ledRunner.run((changes) => {
               for (const segment of changes) {
                 if (segment.type === "on") {
-                  // TODO: mc and logo color
+                  if (segment.locationType === "mc") {
+                    setMcButtonColor(segment.mc, segment.color)
+                  }
+
+                  // TODO: logo color
                   if (segment.locationType !== "xy") continue
 
                   setColor(segment.x, segment.y, segment.color)
                 } else if (segment.type === "off") {
-                  // TODO: mc and logo color
+                  if (segment.locationType === "mc") {
+                    setMcButtonColor(segment.mc, 0)
+                  }
+
+                  // TODO: logo color
                   if (segment.locationType !== "xy") continue
 
                   setColor(segment.x, segment.y, 0)
@@ -160,6 +187,10 @@ export const usePadButtonsStore = create(
     setColor: (x, y, color) =>
       set((state) => {
         state.padButtons[x - 1][y - 1].color = color
+      }),
+    setMcButtonColor: (id, color) =>
+      set((state) => {
+        state.mcButtons[id - 1].color = color
       }),
     resetAllPressCount: () =>
       set((state) => {
