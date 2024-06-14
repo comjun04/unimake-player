@@ -51,7 +51,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
 
       // mc button
       if (position?.mc != null) {
-        if (position.mc !== chain) {
+        if (position.mc !== chain && !autoplaying) {
           setChain(position.mc)
         }
         return
@@ -59,7 +59,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
 
       markBtnPressed(position.x, position.y, chain)
     },
-    [chain]
+    [chain, autoplaying]
   )
 
   const handleBtnRelease = useCallback((position: TButtonPosition) => {
