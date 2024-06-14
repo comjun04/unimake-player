@@ -18,7 +18,7 @@ const ProgressBar: FC<ProgressBarProps> = ({
   innerClassname,
   ...props
 }) => {
-  const percent = (now / max) * 100
+  const percent = Math.min((now / max) * 100, 100)
 
   let bgColor = ""
   if (variant === "primary") {

@@ -98,7 +98,7 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
                     </div>
                     <ProgressBar
                       now={packLoadStatus.step}
-                      max={5}
+                      max={6}
                       variant="success"
                     />
                     <ProgressBar
