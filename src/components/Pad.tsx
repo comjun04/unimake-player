@@ -3,6 +3,7 @@ import PadButton from "./PadButton"
 import { TButtonPosition } from "@/types"
 import { usePadStore } from "@/store"
 import cn from "@/merge-classnames"
+import PadLogo from "./PadLogo"
 
 type PadProps = {
   onBtnPress: (position: TButtonPosition) => void
@@ -42,7 +43,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
   if (showFullMcButtonLayout) {
     let placeHolderCount = 0
     for (let i = 0; i < 10; i++) {
-      if (i < 1 || i > 8) {
+      if (i < 1) {
         buttons.push(
           <div
             key={`placeholder_${placeHolderCount < 1 ? "topleft" : "topright"}`}
@@ -50,6 +51,8 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
           />
         )
         placeHolderCount++
+      } else if (i > 8) {
+        buttons.push(<PadLogo />)
       } else {
         const mcBtnNum = 24 + i
         const id = `mc${mcBtnNum}`
