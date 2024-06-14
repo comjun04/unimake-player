@@ -13,7 +13,7 @@ const useAutoplay = (data: TAutoplayData[]) => {
 
   const { setCalibratedTimeout } = useCalibratedTimeout()
 
-  const internalCurrent = data[idx]
+  const internalCurrent: TAutoplayData | undefined = data[idx]
   const current =
     internalCurrent == null
       ? null
@@ -59,13 +59,13 @@ const useAutoplay = (data: TAutoplayData[]) => {
   }, [idx, playing])
 
   const start = () => {
+    if (internalCurrent?.type === "delay") {
+      setIdx(idx + 1)
+    }
     setPlaying(true)
   }
 
   const stop = () => {
-    if (internalCurrent.type === "delay") {
-      setIdx(idx + 1)
-    }
     setPlaying(false)
   }
 
