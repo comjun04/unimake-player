@@ -63,7 +63,7 @@ const PadButton: FC<PadButtonProps> = ({
       onPointerOut={handleButtonRelease}
       className={cn(
         "rounded aspect-square overflow-hidden select-none",
-        mcBtn ? "rounded-full w-[75%] m-auto" : "rounded-md",
+        mcBtn ? "rounded-full w-[90%] m-auto" : "rounded-md",
         styles.padButton
       )}
     >
