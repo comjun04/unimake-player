@@ -22,7 +22,7 @@ const AutoplayControl: FC<AutoplayControlProps> = ({
   return (
     <div className="px-3 py-2 border border-gray-400 rounded-lg">
       <div className="flex flex-col gap-2">
-        <span>Autoplay</span>
+        <h4 className="text-xl">Autoplay</h4>
         <div className="flex flex-row gap-2 items-center">
           {playing ? (
             <Button variant="secondary" onClick={() => onPause()}>
