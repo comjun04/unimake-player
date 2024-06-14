@@ -42,15 +42,22 @@ export const usePackStore = create(
 
 type PadState = {
   chain: number
+  fullMcButtonLayout: boolean
   setChain: (num: number) => void
+  setFullMcButtonLayout: (value: boolean) => void
 }
 
 export const usePadStore = create(
   immer<PadState>((set) => ({
     chain: 1,
+    fullMcButtonLayout: false,
     setChain: (num) =>
       set((state) => {
         state.chain = num
+      }),
+    setFullMcButtonLayout: (value) =>
+      set((state) => {
+        state.fullMcButtonLayout = value
       }),
   }))
 )
