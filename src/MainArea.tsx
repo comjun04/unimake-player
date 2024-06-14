@@ -111,8 +111,8 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
   }, [currentAutoplaySegment])
 
   return (
-    <div className="flex flex-col lg:flex-row gap-2 w-full p-2">
-      <div className="flex flex-col gap-2 lg:max-w-[30vw]">
+    <div className="flex flex-col lg:flex-row gap-2 w-full p-2 h-full">
+      <div className="flex flex-col gap-2 lg:w-[30vw]">
         <PackInfo
           onLoadPackClick={() => setShowPackLoadModal(true)}
           infoData={packData?.info ?? {}}
@@ -127,7 +127,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
         />
       </div>
 
-      <div className="grow">
+      <div className="grow max-w-[100vh]">
         <Pad onBtnPress={handleBtnPress} onBtnRelease={handleBtnRelease} />
       </div>
     </div>
