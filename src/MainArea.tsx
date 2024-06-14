@@ -6,6 +6,7 @@ import { useShallow } from "zustand/react/shallow"
 import useAutoplay from "./hooks/useAutoplay"
 import { TButtonPosition } from "./types"
 import PackInfo from "./components/PackInfo"
+import SettingsPanel from "./components/SettingsPanel"
 
 type PlayAreaProps = {
   setShowPackLoadModal: (value: boolean) => void
@@ -125,6 +126,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
           now={autoplayNowIdx}
           total={autoplayTotalIdx}
         />
+        <SettingsPanel />
       </div>
 
       <div className="grow max-w-[100vh]">

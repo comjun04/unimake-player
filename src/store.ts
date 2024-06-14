@@ -66,17 +66,20 @@ type PadButtonsStateItem = {
 
 type PadButtonsState = {
   padButtons: PadButtonsStateItem[][]
+  showPressedFeedback: boolean
   getButton: (x: number, y: number) => PadButtonsStateItem
   press: (x: number, y: number, chain: number) => void
   release: (x: number, y: number) => void
   setColor: (x: number, y: number, color: number) => void
   resetAllPressCount: () => void
   resetAllColors: () => void
+  setShowPressedFeedback: (show: boolean) => void
 }
 
 export const usePadButtonsStore = create(
   immer<PadButtonsState>((set, get) => ({
     padButtons: initialPadButtons,
+    showPressedFeedback: true,
     getButton: (x, y) => {
       return get().padButtons[x - 1][y - 1]
     },
@@ -167,6 +170,10 @@ export const usePadButtonsStore = create(
             btnData.color = 0
           }
         }
+      }),
+    setShowPressedFeedback: (show) =>
+      set((state) => {
+        state.showPressedFeedback = show
       }),
   }))
 )

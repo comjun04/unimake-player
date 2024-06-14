@@ -24,14 +24,18 @@ const PadButton: FC<PadButtonProps> = ({
 }) => {
   const currentChain = usePadStore((state) => state.chain)
 
-  const { pressed, color } = usePadButtonsStore(
+  const { pressed, color, showPressedFeedback } = usePadButtonsStore(
     useShallow((state) => {
       if ("mc" in position) {
         return { pressed: false, color: 0 }
       }
 
       const btnData = state.getButton(position.x, position.y)
-      return { pressed: btnData.pressed, color: btnData.color }
+      return {
+        pressed: btnData.pressed,
+        color: btnData.color,
+        showPressedFeedback: state.showPressedFeedback,
+      }
     })
   )
 
@@ -47,7 +51,7 @@ const PadButton: FC<PadButtonProps> = ({
 
   const bgColorClassname = shouldShowSelectedChain
     ? styles.padButtonMCSelectedBg
-    : !mcBtn && pressed
+    : !mcBtn && pressed && showPressedFeedback
     ? styles.padButtonPressedBg
     : `bgcolor-${color}`
 
