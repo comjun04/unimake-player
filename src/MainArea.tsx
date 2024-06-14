@@ -7,6 +7,7 @@ import useAutoplay from "./hooks/useAutoplay"
 import { TButtonPosition } from "./types"
 import PackInfo from "./components/PackInfo"
 import SettingsPanel from "./components/SettingsPanel"
+import InfoPanel from "./components/InfoPanel"
 
 type PlayAreaProps = {
   setShowPackLoadModal: (value: boolean) => void
@@ -127,6 +128,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
           total={autoplayTotalIdx}
         />
         <SettingsPanel />
+        <InfoPanel />
       </div>
 
       <div className="grow max-w-[100vh]">
