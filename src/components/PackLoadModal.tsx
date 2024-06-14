@@ -7,8 +7,8 @@ import {
   TransitionChild,
 } from "@headlessui/react"
 import { FC, FormEvent, createRef, useEffect, useState } from "react"
-import Button from "./Button"
-import ProgressBar from "./ProgressBar"
+import Button from "./common/Button"
+import ProgressBar from "./common/ProgressBar"
 
 type PackLoadModalProps = {
   show: boolean

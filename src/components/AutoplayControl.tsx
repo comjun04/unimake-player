@@ -1,6 +1,6 @@
 import { FC } from "react"
-import Button from "./Button"
-import ProgressBar from "./ProgressBar"
+import Button from "./common/Button"
+import ProgressBar from "./common/ProgressBar"
 
 type AutoplayControlProps = {
   playing: boolean

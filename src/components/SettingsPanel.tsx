@@ -1,5 +1,5 @@
 import { usePadButtonsStore } from "@/store"
-import Checkbox from "./Checkbox"
+import Checkbox from "./common/Checkbox"
 import { FC, memo } from "react"
 import { useShallow } from "zustand/react/shallow"
 

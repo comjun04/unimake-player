@@ -1,5 +1,5 @@
 import { FC } from "react"
-import Button from "./Button"
+import Button from "./common/Button"
 
 type PackInfoProps = {
   onLoadPackClick: () => void
