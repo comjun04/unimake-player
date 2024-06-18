@@ -1,3 +1,5 @@
+/* background colors */
+
 .bgcolor-0 {
   background-color: transparent;
 }
@@ -396,4 +398,407 @@
 }
 .bgcolor-127 {
   background-color: #e37829;
+}
+
+/* logo colors */
+
+.logocolor-0 {
+  /* different from   */
+  color: #808080;
+}
+.logocolor-1 {
+  color: #fafafa77;
+}
+.logocolor-2 {
+  color: #fafafaaa;
+}
+.logocolor-3 {
+  color: #fafafa;
+}
+.logocolor-4 {
+  color: #f8bbd0;
+}
+.logocolor-5 {
+  color: #ef5350;
+}
+.logocolor-6 {
+  color: #e57373;
+}
+.logocolor-7 {
+  color: #ef9a9a;
+}
+
+.logocolor-8 {
+  color: #fff3e0;
+}
+.logocolor-9 {
+  color: #ffa726;
+}
+.logocolor-10 {
+  color: #ffb960;
+}
+.logocolor-11 {
+  color: #ffcc80;
+}
+.logocolor-12 {
+  color: #ffe0b2;
+}
+.logocolor-13 {
+  color: #ffee58;
+}
+.logocolor-14 {
+  color: #fff59d;
+}
+.logocolor-15 {
+  color: #fff9c4;
+}
+
+.logocolor-16 {
+  color: #dcedc8;
+}
+.logocolor-17 {
+  color: #8bc34a;
+}
+.logocolor-18 {
+  color: #aed581;
+}
+.logocolor-19 {
+  color: #bfdf9f;
+}
+.logocolor-20 {
+  color: #5ee2b0;
+}
+.logocolor-21 {
+  color: #00ce3c;
+}
+.logocolor-22 {
+  color: #00ba43;
+}
+.logocolor-23 {
+  color: #119c3f;
+}
+
+.logocolor-24 {
+  color: #57ecc1;
+}
+.logocolor-25 {
+  color: #00e864;
+}
+.logocolor-26 {
+  color: #00e05c;
+}
+.logocolor-27 {
+  color: #00d545;
+}
+.logocolor-28 {
+  color: #7afddd;
+}
+.logocolor-29 {
+  color: #00e4c5;
+}
+.logocolor-30 {
+  color: #00e0b2;
+}
+.logocolor-31 {
+  color: #01eec6;
+}
+
+.logocolor-32 {
+  color: #49efef;
+}
+.logocolor-33 {
+  color: #00e7d8;
+}
+.logocolor-34 {
+  color: #00e5d1;
+}
+.logocolor-35 {
+  color: #01efde;
+}
+.logocolor-36 {
+  color: #6addff;
+}
+.logocolor-37 {
+  color: #00dafe;
+}
+.logocolor-38 {
+  color: #01d6ff;
+}
+.logocolor-39 {
+  color: #08acdc;
+}
+
+.logocolor-40 {
+  color: #73cefe;
+}
+.logocolor-41 {
+  color: #0d98f7;
+}
+.logocolor-42 {
+  color: #148de4;
+}
+.logocolor-43 {
+  color: #2a77c9;
+}
+.logocolor-44 {
+  color: #8693ff;
+}
+.logocolor-45 {
+  color: #2196f3;
+}
+.logocolor-46 {
+  color: #4668f6;
+}
+.logocolor-47 {
+  color: #4153dc;
+}
+
+.logocolor-48 {
+  color: #b095ff;
+}
+.logocolor-49 {
+  color: #8453fd;
+}
+.logocolor-50 {
+  color: #634acd;
+}
+.logocolor-51 {
+  color: #5749c5;
+}
+.logocolor-52 {
+  color: #ffb7ff;
+}
+.logocolor-53 {
+  color: #e863fb;
+}
+.logocolor-54 {
+  color: #d655ed;
+}
+.logocolor-55 {
+  color: #d14fe9;
+}
+
+.logocolor-56 {
+  color: #fc99e3;
+}
+.logocolor-57 {
+  color: #e736c2;
+}
+.logocolor-58 {
+  color: #e52fbe;
+}
+.logocolor-59 {
+  color: #e334b6;
+}
+.logocolor-60 {
+  color: #ed353e;
+}
+.logocolor-61 {
+  color: #ffa726;
+}
+.logocolor-62 {
+  color: #f4df0b;
+}
+.logocolor-63 {
+  color: #8bc34a;
+}
+
+.logocolor-64 {
+  color: #5cd100;
+}
+.logocolor-65 {
+  color: #00d29e;
+}
+.logocolor-66 {
+  color: #2388ff;
+}
+.logocolor-67 {
+  color: #3669fd;
+}
+.logocolor-68 {
+  color: #00b4d0;
+}
+.logocolor-69 {
+  color: #475cdc;
+}
+.logocolor-70 {
+  color: #fafafadd;
+}
+.logocolor-71 {
+  color: #fafafacc;
+}
+
+.logocolor-72 {
+  color: #f72737;
+}
+.logocolor-73 {
+  color: #d2ea7b;
+}
+.logocolor-74 {
+  color: #c8df10;
+}
+.logocolor-75 {
+  color: #7fe422;
+}
+.logocolor-76 {
+  color: #00c931;
+}
+.logocolor-77 {
+  color: #00d7a6;
+}
+.logocolor-78 {
+  color: #00d8fc;
+}
+.logocolor-79 {
+  color: #0b96fc;
+}
+
+.logocolor-80 {
+  color: #585cf5;
+}
+.logocolor-81 {
+  color: #ac59f0;
+}
+.logocolor-82 {
+  color: #d980dc;
+}
+.logocolor-83 {
+  color: #b8814a;
+}
+.logocolor-84 {
+  color: #ff9800;
+}
+.logocolor-85 {
+  color: #abdf22;
+}
+.logocolor-86 {
+  color: #9ee154;
+}
+.logocolor-87 {
+  color: #66bb6a;
+}
+
+.logocolor-88 {
+  color: #3bda47;
+}
+.logocolor-89 {
+  color: #6fdeb9;
+}
+.logocolor-90 {
+  color: #27dbda;
+}
+.logocolor-91 {
+  color: #9cc8fd;
+}
+.logocolor-92 {
+  color: #79b8f7;
+}
+.logocolor-93 {
+  color: #afafef;
+}
+.logocolor-94 {
+  color: #d580eb;
+}
+.logocolor-95 {
+  color: #f74fca;
+}
+
+.logocolor-96 {
+  color: #ea8a1f;
+}
+.logocolor-97 {
+  color: #dbdb08;
+}
+.logocolor-98 {
+  color: #9cd60d;
+}
+.logocolor-99 {
+  color: #f3d335;
+}
+.logocolor-100 {
+  color: #c8af41;
+}
+.logocolor-101 {
+  color: #00ca69;
+}
+.logocolor-102 {
+  color: #24d2b0;
+}
+.logocolor-103 {
+  color: #757ebe;
+}
+
+.logocolor-104 {
+  color: #5388db;
+}
+.logocolor-105 {
+  color: #e5c5a6;
+}
+.logocolor-106 {
+  color: #e93b3b;
+}
+.logocolor-107 {
+  color: #f9a2a1;
+}
+.logocolor-108 {
+  color: #ed9c65;
+}
+.logocolor-109 {
+  color: #e1ca72;
+}
+.logocolor-110 {
+  color: #b8da78;
+}
+.logocolor-111 {
+  color: #98d52c;
+}
+
+.logocolor-112 {
+  color: #626cbd;
+}
+.logocolor-113 {
+  color: #cac8a0;
+}
+.logocolor-114 {
+  color: #90d4c2;
+}
+.logocolor-115 {
+  color: #ceddfe;
+}
+.logocolor-116 {
+  color: #beccf7;
+}
+.logocolor-117 {
+  color: #fafafa55;
+}
+.logocolor-118 {
+  color: #fafafa77;
+}
+.logocolor-119 {
+  color: #fafafaaa;
+}
+
+.logocolor-120 {
+  color: #fe1624;
+}
+.logocolor-121 {
+  color: #cd2724;
+}
+.logocolor-122 {
+  color: #9ccc65;
+}
+.logocolor-123 {
+  color: #009c1b;
+}
+.logocolor-124 {
+  color: #ffff00;
+}
+.logocolor-125 {
+  color: #beb212;
+}
+.logocolor-126 {
+  color: #f5d01d;
+}
+.logocolor-127 {
+  color: #e37829;
 }
