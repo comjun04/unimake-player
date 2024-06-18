@@ -31,6 +31,7 @@ const MemoizedPadButton = memo(PadButton, (oldProps, newProps) => {
 
   return true
 })
+const MemoizedPadLogo = memo(PadLogo)
 
 const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
   const showFullMcButtonLayout = usePadStore(
@@ -52,7 +53,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
         )
         placeHolderCount++
       } else if (i > 8) {
-        buttons.push(<PadLogo />)
+        buttons.push(<MemoizedPadLogo key="logo" />)
       } else {
         const mcBtnNum = 24 + i
         const id = `mc${mcBtnNum}`
