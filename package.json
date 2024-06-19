@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write src"
   },
   "dependencies": {
     "@headlessui/react": "^2.0.4",
@@ -22,12 +23,15 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
+    "prettier": "^3.3.2",
+    "prettier-plugin-tailwindcss": "^0.6.5",
     "tailwindcss": "^3.4.4",
     "typescript": "^4.9.3",
     "vite": "^5.2.13"
