@@ -9,13 +9,11 @@ const PadLogo: FC = () => {
   const logoColor = usePadButtonsStore((state) => state.logoColor)
 
   return (
-    <div className="aspect-square m-auto w-[95%] h-[95%]">
-      <div className="text-[#808080]">
-        {/* temporary logo icon */}
-        <BsXDiamondFill
-          className={cn(`w-full h-full bg-clip-text logocolor-${logoColor}`)}
-        />
-      </div>
+    <div className="aspect-square m-auto w-[95%] h-[95%] text-[#808080]">
+      {/* temporary logo icon */}
+      <BsXDiamondFill
+        className={cn(`w-full h-full bg-clip-text logocolor-${logoColor}`)}
+      />
     </div>
   )
 }
