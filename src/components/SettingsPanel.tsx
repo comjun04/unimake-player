@@ -1,4 +1,4 @@
-import { usePadButtonsStore } from "@/store"
+import { usePadButtonsStore, usePadStore } from "@/store"
 import Checkbox from "./common/Checkbox"
 import { FC, memo } from "react"
 import { useShallow } from "zustand/react/shallow"
@@ -13,6 +13,12 @@ const SettingsPanel: FC = () => {
         setShowBtnPressedFeedback: state.setShowPressedFeedback,
       }))
     )
+  const { fullMcButtonLayout, setFullMcButtonLayout } = usePadStore(
+    useShallow((state) => ({
+      fullMcButtonLayout: state.fullMcButtonLayout,
+      setFullMcButtonLayout: state.setFullMcButtonLayout,
+    }))
+  )
 
   return (
     <div className="px-3 py-2 border border-gray-400 rounded-lg">
@@ -25,8 +31,12 @@ const SettingsPanel: FC = () => {
             onChange={setShowBtnPressedFeedback}
             label="Show Button Press Feedback"
           />
-
-          <label htmlFor="a"></label>
+          <MemoizedCheckbox
+            id="bbb"
+            checked={fullMcButtonLayout}
+            onChange={setFullMcButtonLayout}
+            label="Full MC Button Layout"
+          />
         </div>
       </div>
     </div>
