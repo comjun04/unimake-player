@@ -68,7 +68,14 @@ const PadButton: FC<PadButtonProps> = ({
         styles.padButton,
       )}
     >
-      <div className={cn('h-full w-full', bgColorClassname)}>{children}</div>
+      <div
+        className={cn(
+          'flex h-full w-full flex-row items-center justify-center',
+          bgColorClassname,
+        )}
+      >
+        {children}
+      </div>
     </button>
   )
 }
