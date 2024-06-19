@@ -88,6 +88,7 @@ type PadButtonsState = {
   mcButtons: McButtonsStateItem[]
   logoColor: number
   showPressedFeedback: boolean
+  showButtonId: boolean
   getButton: (x: number, y: number) => PadButtonsStateItem
   getMcButton: (id: number) => McButtonsStateItem
   press: (x: number, y: number, chain: number) => void
@@ -98,6 +99,7 @@ type PadButtonsState = {
   resetAllPressCount: () => void
   resetAllColors: () => void
   setShowPressedFeedback: (show: boolean) => void
+  setShowButtonId: (show: boolean) => void
 }
 
 export const usePadButtonsStore = create(
@@ -106,6 +108,7 @@ export const usePadButtonsStore = create(
     mcButtons: initialMcButtons,
     logoColor: 0,
     showPressedFeedback: true,
+    showButtonId: false,
     getButton: (x, y) => {
       return get().padButtons[x - 1][y - 1]
     },
@@ -219,6 +222,10 @@ export const usePadButtonsStore = create(
     setShowPressedFeedback: (show) =>
       set((state) => {
         state.showPressedFeedback = show
+      }),
+    setShowButtonId: (show) =>
+      set((state) => {
+        state.showButtonId = show
       }),
   })),
 )

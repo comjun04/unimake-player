@@ -1,7 +1,7 @@
 import { FC, ReactElement, memo } from 'react'
 
 import cn from '@/merge-classnames'
-import { usePadStore } from '@/store'
+import { usePadButtonsStore, usePadStore } from '@/store'
 import { TButtonPosition } from '@/types'
 
 import PadButton from './PadButton'
@@ -39,6 +39,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
   const showFullMcButtonLayout = usePadStore(
     (state) => state.fullMcButtonLayout,
   )
+  const showButtonId = usePadButtonsStore((state) => state.showButtonId)
 
   const buttons: ReactElement<typeof PadButton | HTMLDivElement>[] = []
 
@@ -65,7 +66,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
             mcBtn
             position={{ mc: mcBtnNum }}
           >
-            {id}
+            {showButtonId && id}
           </MemoizedPadButton>,
         )
       }
@@ -97,7 +98,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
             onPress={shouldBindEventCallback ? onBtnPress : undefined}
             onRelease={shouldBindEventCallback ? onBtnRelease : undefined}
           >
-            {id}
+            {showButtonId && id}
           </MemoizedPadButton>,
         )
       }
@@ -117,7 +118,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
             onPress={onBtnPress}
             onRelease={onBtnRelease}
           >
-            {id}
+            {showButtonId && id}
           </MemoizedPadButton>,
         )
       }
@@ -143,7 +144,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
         const id = `mc${mcBtnNum}`
         buttons.push(
           <MemoizedPadButton key={id} mcBtn position={{ mc: mcBtnNum }}>
-            {id}
+            {showButtonId && id}
           </MemoizedPadButton>,
         )
       }

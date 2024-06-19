@@ -8,13 +8,19 @@ import Checkbox from './common/Checkbox'
 const MemoizedCheckbox = memo(Checkbox)
 
 const SettingsPanel: FC = () => {
-  const { showBtnPressedFeedback, setShowBtnPressedFeedback } =
-    usePadButtonsStore(
-      useShallow((state) => ({
-        showBtnPressedFeedback: state.showPressedFeedback,
-        setShowBtnPressedFeedback: state.setShowPressedFeedback,
-      })),
-    )
+  const {
+    showBtnPressedFeedback,
+    setShowBtnPressedFeedback,
+    showBtnId,
+    setShowBtnId,
+  } = usePadButtonsStore(
+    useShallow((state) => ({
+      showBtnPressedFeedback: state.showPressedFeedback,
+      setShowBtnPressedFeedback: state.setShowPressedFeedback,
+      showBtnId: state.showButtonId,
+      setShowBtnId: state.setShowButtonId,
+    })),
+  )
   const { fullMcButtonLayout, setFullMcButtonLayout } = usePadStore(
     useShallow((state) => ({
       fullMcButtonLayout: state.fullMcButtonLayout,
@@ -38,6 +44,12 @@ const SettingsPanel: FC = () => {
             checked={fullMcButtonLayout}
             onChange={setFullMcButtonLayout}
             label="Full MC Button Layout"
+          />
+          <MemoizedCheckbox
+            id="ccc"
+            checked={showBtnId}
+            onChange={setShowBtnId}
+            label="Show Button ID text"
           />
         </div>
       </div>
