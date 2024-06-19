@@ -21,7 +21,7 @@ const SettingsPanel: FC = () => {
   )
 
   return (
-    <div className="px-3 py-2 border border-gray-400 rounded-lg">
+    <div className="px-3 py-2 border border-gray-400 rounded-lg select-none">
       <div className="flex flex-col gap-2">
         <h4 className="text-xl">Settings</h4>
         <div className="flex flex-col gap-2">
