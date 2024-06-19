@@ -134,7 +134,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
         <MemoizedSettingsPanel />
       </div>
 
-      <div className="grow max-w-[100vh]">
+      <div className="grow max-w-[95vh]">
         <Pad onBtnPress={handleBtnPress} onBtnRelease={handleBtnRelease} />
       </div>
     </div>
