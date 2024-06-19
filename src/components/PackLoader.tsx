@@ -1,6 +1,8 @@
-import useProcessPack, { IPackData } from "@/hooks/useProcessPack"
-import { FC, useEffect } from "react"
-import PackLoadModal from "./PackLoadModal"
+import { FC, useEffect } from 'react'
+
+import useProcessPack, { IPackData } from '@/hooks/useProcessPack'
+
+import PackLoadModal from './PackLoadModal'
 
 type PackLoaderProps = {
   showModal: boolean

@@ -1,4 +1,4 @@
-import { TKeyLEDData, TKeyLEDSegment } from "./types"
+import { TKeyLEDData, TKeyLEDSegment } from './types'
 
 export default class LEDRunner {
   readonly data: TKeyLEDData[string][number]
@@ -17,7 +17,7 @@ export default class LEDRunner {
 
     for (let i = 0; i < this.data.repeat; i++) {
       for await (const segment of this.data.segments) {
-        if (segment.type === "delay") {
+        if (segment.type === 'delay') {
           onUpdate(changes.slice())
           changes.length = 0
 

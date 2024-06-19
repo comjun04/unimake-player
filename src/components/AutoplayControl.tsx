@@ -1,6 +1,7 @@
-import { FC } from "react"
-import Button from "./common/Button"
-import ProgressBar from "./common/ProgressBar"
+import { FC } from 'react'
+
+import Button from './common/Button'
+import ProgressBar from './common/ProgressBar'
 
 type AutoplayControlProps = {
   playing: boolean
@@ -20,10 +21,10 @@ const AutoplayControl: FC<AutoplayControlProps> = ({
   total,
 }) => {
   return (
-    <div className="px-3 py-2 border border-gray-400 rounded-lg">
+    <div className="rounded-lg border border-gray-400 px-3 py-2">
       <div className="flex flex-col gap-2">
         <h4 className="text-xl">Autoplay</h4>
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row items-center gap-2">
           {playing ? (
             <Button variant="secondary" onClick={() => onPause()}>
               Pause

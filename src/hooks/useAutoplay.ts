@@ -1,6 +1,8 @@
-import type { TAutoplayData } from "@/types"
-import { useEffect, useRef, useState } from "react"
-import useCalibratedTimeout from "./useCalibratedTimeout"
+import { useEffect, useRef, useState } from 'react'
+
+import type { TAutoplayData } from '@/types'
+
+import useCalibratedTimeout from './useCalibratedTimeout'
 
 const useAutoplay = (data: TAutoplayData[]) => {
   const [idx, setIdx] = useState(-1)
@@ -17,9 +19,9 @@ const useAutoplay = (data: TAutoplayData[]) => {
   const current =
     internalCurrent == null
       ? null
-      : internalCurrent.type === "delay"
-      ? data[idx - 1]
-      : internalCurrent
+      : internalCurrent.type === 'delay'
+        ? data[idx - 1]
+        : internalCurrent
 
   // data 값이 바뀌었다면 다른 pack을 불러온 것이므로 reset
   useEffect(() => {
@@ -44,7 +46,7 @@ const useAutoplay = (data: TAutoplayData[]) => {
       return
     }
 
-    if (internalCurrent?.type === "delay") {
+    if (internalCurrent?.type === 'delay') {
       const timer = setCalibratedTimeout(() => {
         if (playingRef.current) {
           setIdx((i) => i + 1)
@@ -59,7 +61,7 @@ const useAutoplay = (data: TAutoplayData[]) => {
   }, [idx, playing])
 
   const start = () => {
-    if (internalCurrent?.type === "delay") {
+    if (internalCurrent?.type === 'delay') {
       setIdx(idx + 1)
     }
     setPlaying(true)
@@ -70,7 +72,7 @@ const useAutoplay = (data: TAutoplayData[]) => {
   }
 
   const reset = () => {
-    console.log("reset called")
+    console.log('reset called')
     setIdx(-1)
     setPlaying(false)
   }

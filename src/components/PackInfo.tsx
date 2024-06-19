@@ -1,5 +1,6 @@
-import { FC } from "react"
-import Button from "./common/Button"
+import { FC } from 'react'
+
+import Button from './common/Button'
 
 type PackInfoProps = {
   onLoadPackClick: () => void
@@ -8,7 +9,7 @@ type PackInfoProps = {
 
 const PackInfo: FC<PackInfoProps> = ({ onLoadPackClick, infoData }) => {
   return (
-    <div className="flex flex-col gap-2 px-3 py-2 border border-gray-400 rounded-lg">
+    <div className="flex flex-col gap-2 rounded-lg border border-gray-400 px-3 py-2">
       <h4 className="text-xl">Pack Information</h4>
       <ul>
         <li>Title: {infoData?.title}</li>

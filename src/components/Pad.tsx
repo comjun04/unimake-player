@@ -1,9 +1,11 @@
-import { FC, ReactElement, memo } from "react"
-import PadButton from "./PadButton"
-import { TButtonPosition } from "@/types"
-import { usePadStore } from "@/store"
-import cn from "@/merge-classnames"
-import PadLogo from "./PadLogo"
+import { FC, ReactElement, memo } from 'react'
+
+import cn from '@/merge-classnames'
+import { usePadStore } from '@/store'
+import { TButtonPosition } from '@/types'
+
+import PadButton from './PadButton'
+import PadLogo from './PadLogo'
 
 type PadProps = {
   onBtnPress: (position: TButtonPosition) => void
@@ -14,7 +16,7 @@ const MemoizedPadButton = memo(PadButton, (oldProps, newProps) => {
   for (const k in newProps) {
     const key = k as keyof typeof newProps
 
-    if (key === "position") {
+    if (key === 'position') {
       if (
         !(
           oldProps.position.x === newProps.position.x &&
@@ -35,7 +37,7 @@ const MemoizedPadLogo = memo(PadLogo)
 
 const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
   const showFullMcButtonLayout = usePadStore(
-    (state) => state.fullMcButtonLayout
+    (state) => state.fullMcButtonLayout,
   )
 
   const buttons: ReactElement<typeof PadButton | HTMLDivElement>[] = []
@@ -47,9 +49,9 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
       if (i < 1) {
         buttons.push(
           <div
-            key={`placeholder_${placeHolderCount < 1 ? "topleft" : "topright"}`}
+            key={`placeholder_${placeHolderCount < 1 ? 'topleft' : 'topright'}`}
             className="aspect-square"
-          />
+          />,
         )
         placeHolderCount++
       } else if (i > 8) {
@@ -64,7 +66,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
             position={{ mc: mcBtnNum }}
           >
             {id}
-          </MemoizedPadButton>
+          </MemoizedPadButton>,
         )
       }
     }
@@ -96,7 +98,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
             onRelease={shouldBindEventCallback ? onBtnRelease : undefined}
           >
             {id}
-          </MemoizedPadButton>
+          </MemoizedPadButton>,
         )
       }
     } else {
@@ -116,7 +118,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
             onRelease={onBtnRelease}
           >
             {id}
-          </MemoizedPadButton>
+          </MemoizedPadButton>,
         )
       }
     }
@@ -130,10 +132,10 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
         buttons.push(
           <div
             key={`placeholder_${
-              placeHolderCount < 1 ? "bottomleft" : "bottomright"
+              placeHolderCount < 1 ? 'bottomleft' : 'bottomright'
             }`}
             className="aspect-square"
-          />
+          />,
         )
         placeHolderCount++
       } else {
@@ -142,7 +144,7 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
         buttons.push(
           <MemoizedPadButton key={id} mcBtn position={{ mc: mcBtnNum }}>
             {id}
-          </MemoizedPadButton>
+          </MemoizedPadButton>,
         )
       }
     }
@@ -151,8 +153,8 @@ const Pad: FC<PadProps> = ({ onBtnPress, onBtnRelease }) => {
   return (
     <div
       className={cn(
-        "grid gap-[2px] sm:gap-[4px] content-stretch",
-        showFullMcButtonLayout ? "grid-cols-10" : "grid-cols-9"
+        'grid content-stretch gap-[2px] sm:gap-[4px]',
+        showFullMcButtonLayout ? 'grid-cols-10' : 'grid-cols-9',
       )}
     >
       {buttons}

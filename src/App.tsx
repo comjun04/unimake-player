@@ -1,8 +1,9 @@
-import { FC, useState } from "react"
-import { IPackData } from "./hooks/useProcessPack"
-import PackLoadWrapper from "./components/PackLoadWrapper"
-import { usePackStore } from "./store"
-import MainArea from "./MainArea"
+import { FC, useState } from 'react'
+
+import MainArea from './MainArea'
+import PackLoadWrapper from './components/PackLoadWrapper'
+import { IPackData } from './hooks/useProcessPack'
+import { usePackStore } from './store'
 
 const App: FC = () => {
   const [showPackLoadModal, setShowPackLoadModal] = useState(false)
@@ -19,7 +20,7 @@ const App: FC = () => {
 
   return (
     <>
-      <div className="w-full max-w-screen-sm lg:max-w-full h-full mx-auto">
+      <div className="mx-auto h-full w-full max-w-screen-sm lg:max-w-full">
         <MainArea setShowPackLoadModal={setShowPackLoadModal} />
       </div>
       <PackLoadWrapper

@@ -1,13 +1,14 @@
-import { FC, memo, useCallback, useEffect } from "react"
-import AutoplayControl from "./components/AutoplayControl"
-import Pad from "./components/Pad"
-import { usePackStore, usePadButtonsStore, usePadStore } from "./store"
-import { useShallow } from "zustand/react/shallow"
-import useAutoplay from "./hooks/useAutoplay"
-import { TButtonPosition } from "./types"
-import PackInfo from "./components/PackInfo"
-import SettingsPanel from "./components/SettingsPanel"
-import InfoPanel from "./components/InfoPanel"
+import { FC, memo, useCallback, useEffect } from 'react'
+import { useShallow } from 'zustand/react/shallow'
+
+import AutoplayControl from './components/AutoplayControl'
+import InfoPanel from './components/InfoPanel'
+import PackInfo from './components/PackInfo'
+import Pad from './components/Pad'
+import SettingsPanel from './components/SettingsPanel'
+import useAutoplay from './hooks/useAutoplay'
+import { usePackStore, usePadButtonsStore, usePadStore } from './store'
+import { TButtonPosition } from './types'
 
 const MemoizedSettingsPanel = memo(SettingsPanel)
 const MemoizedInfoPanel = memo(InfoPanel)
@@ -23,7 +24,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
     useShallow((state) => ({
       chain: state.chain,
       setChain: state.setChain,
-    }))
+    })),
   )
 
   const { markBtnPressed, markBtnReleased, resetAllBtnPressCount } =
@@ -32,7 +33,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
         markBtnPressed: state.press,
         markBtnReleased: state.release,
         resetAllBtnPressCount: state.resetAllPressCount,
-      }))
+      })),
     )
 
   const {
@@ -59,7 +60,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
 
       markBtnPressed(position.x, position.y, chain)
     },
-    [chain, autoplaying]
+    [chain, autoplaying],
   )
 
   const handleBtnRelease = useCallback((position: TButtonPosition) => {
@@ -78,21 +79,21 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
     if (!currentAutoplaySegment) return
 
     switch (currentAutoplaySegment.type) {
-      case "on":
+      case 'on':
         handleBtnPress({
           x: currentAutoplaySegment.x,
           y: currentAutoplaySegment.y,
         })
         break
 
-      case "off":
+      case 'off':
         handleBtnRelease({
           x: currentAutoplaySegment.x,
           y: currentAutoplaySegment.y,
         })
         break
 
-      case "touch": {
+      case 'touch': {
         handleBtnPress({
           x: currentAutoplaySegment.x,
           y: currentAutoplaySegment.y,
@@ -109,14 +110,14 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
         break
       }
 
-      case "chain":
+      case 'chain':
         setChain(currentAutoplaySegment.chain)
         break
     }
   }, [currentAutoplaySegment])
 
   return (
-    <div className="flex flex-col lg:flex-row gap-2 w-full p-2 h-full">
+    <div className="flex h-full w-full flex-col gap-2 p-2 lg:flex-row">
       <div className="flex flex-col gap-2 lg:w-[30vw]">
         <MemoizedInfoPanel />
         <PackInfo
@@ -134,7 +135,7 @@ const PlayArea: FC<PlayAreaProps> = ({ setShowPackLoadModal }) => {
         <MemoizedSettingsPanel />
       </div>
 
-      <div className="grow max-w-[95vh]">
+      <div className="max-w-[95vh] grow">
         <Pad onBtnPress={handleBtnPress} onBtnRelease={handleBtnRelease} />
       </div>
     </div>

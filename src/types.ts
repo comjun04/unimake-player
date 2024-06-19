@@ -12,60 +12,60 @@ export type TButtonPosition =
 
 export type TAutoplayData =
   | {
-      type: "chain"
+      type: 'chain'
       chain: number
     }
   | {
-      type: "delay"
+      type: 'delay'
       delay: number
     }
   | {
-      type: "on" | "off" | "touch"
+      type: 'on' | 'off' | 'touch'
       x: number
       y: number
     }
 
 export type TKeyLEDSegment =
   | {
-      type: "chain"
+      type: 'chain'
       chain: number
     }
   | {
-      type: "delay"
+      type: 'delay'
       delay: number
     }
   | {
-      type: "on"
-      locationType: "xy"
+      type: 'on'
+      locationType: 'xy'
       x: number
       y: number
       color: number
     }
   | {
-      type: "on"
-      locationType: "mc"
+      type: 'on'
+      locationType: 'mc'
       mc: number
       color: number
     }
   | {
-      type: "on"
-      locationType: "logo"
+      type: 'on'
+      locationType: 'logo'
       color: number
     }
   | {
-      type: "off"
-      locationType: "xy"
+      type: 'off'
+      locationType: 'xy'
       x: number
       y: number
     }
   | {
-      type: "off"
-      locationType: "mc"
+      type: 'off'
+      locationType: 'mc'
       mc: number
     }
   | {
-      type: "off"
-      locationType: "logo"
+      type: 'off'
+      locationType: 'logo'
     }
 
 export type TKeyLEDDataUnsorted = Record<

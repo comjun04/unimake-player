@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const useCalibratedTimeout = () => {
   const [offset, setOffset] = useState(0)

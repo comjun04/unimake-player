@@ -1,7 +1,8 @@
-import { create } from "zustand"
-import { immer } from "zustand/middleware/immer"
-import { IPackData } from "./hooks/useProcessPack"
-import LEDRunner from "./LEDRunner"
+import { create } from 'zustand'
+import { immer } from 'zustand/middleware/immer'
+
+import LEDRunner from './LEDRunner'
+import { IPackData } from './hooks/useProcessPack'
 
 const initialPadButtons: PadButtonsStateItem[][] =
   Array<PadButtonsStateItem[]>(8)
@@ -42,7 +43,7 @@ export const usePackStore = create(
         state.packData = pack
       })
     },
-  }))
+  })),
 )
 
 // =====
@@ -66,7 +67,7 @@ export const usePadStore = create(
       set((state) => {
         state.fullMcButtonLayout = value
       }),
-  }))
+  })),
 )
 
 // =====
@@ -130,8 +131,8 @@ export const usePadButtonsStore = create(
             const sound = packData.sounds.howlers.get(currentMapping.soundName)
 
             const t = Date.now()
-            console.log("btn pressed")
-            sound?.once("play", () => console.log("play start", Date.now() - t))
+            console.log('btn pressed')
+            sound?.once('play', () => console.log('play start', Date.now() - t))
             sound?.play()
           }
 
@@ -153,18 +154,18 @@ export const usePadButtonsStore = create(
             const ledRunner = new LEDRunner(currentMapping)
             ledRunner.run((changes) => {
               for (const segment of changes) {
-                if (segment.type === "on") {
-                  if (segment.locationType === "mc") {
+                if (segment.type === 'on') {
+                  if (segment.locationType === 'mc') {
                     setMcButtonColor(segment.mc, segment.color)
-                  } else if (segment.locationType === "logo") {
+                  } else if (segment.locationType === 'logo') {
                     setLogoColor(segment.color)
                   } else {
                     setColor(segment.x, segment.y, segment.color)
                   }
-                } else if (segment.type === "off") {
-                  if (segment.locationType === "mc") {
+                } else if (segment.type === 'off') {
+                  if (segment.locationType === 'mc') {
                     setMcButtonColor(segment.mc, 0)
-                  } else if (segment.locationType === "logo") {
+                  } else if (segment.locationType === 'logo') {
                     setLogoColor(0)
                   } else {
                     setColor(segment.x, segment.y, 0)
@@ -219,5 +220,5 @@ export const usePadButtonsStore = create(
       set((state) => {
         state.showPressedFeedback = show
       }),
-  }))
+  })),
 )

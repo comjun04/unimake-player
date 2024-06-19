@@ -1,14 +1,16 @@
-import { IProcessStatus } from "@/hooks/useProcessPack"
 import {
   Dialog,
   DialogPanel,
   DialogTitle,
   Transition,
   TransitionChild,
-} from "@headlessui/react"
-import { FC, FormEvent, createRef, useEffect, useState } from "react"
-import Button from "./common/Button"
-import ProgressBar from "./common/ProgressBar"
+} from '@headlessui/react'
+import { FC, FormEvent, createRef, useEffect, useState } from 'react'
+
+import { IProcessStatus } from '@/hooks/useProcessPack'
+
+import Button from './common/Button'
+import ProgressBar from './common/ProgressBar'
 
 type PackLoadModalProps = {
   show: boolean
@@ -32,7 +34,7 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
     console.log(fileInputRef.current?.files)
     const file = fileInputRef.current?.files?.[0]
     if (!file) {
-      window.alert("Select file first.")
+      window.alert('Select file first.')
       return
     }
 
@@ -66,7 +68,7 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
           <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
         </TransitionChild>
 
-        <div className="fixed inset-0 flex flex-row w-screen items-center justify-center">
+        <div className="fixed inset-0 flex w-screen flex-row items-center justify-center">
           <TransitionChild
             enter="ease-out duration-300"
             enterFrom="opacity-0 scale-95"
@@ -75,7 +77,7 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <DialogPanel className="p-6 rounded-xl bg-gray-800">
+            <DialogPanel className="rounded-xl bg-gray-800 p-6">
               <form
                 className="flex flex-col gap-2"
                 onSubmit={(event) => {
@@ -109,7 +111,7 @@ const PackLoadModal: FC<PackLoadModalProps> = ({
                       label={
                         packLoadStatus.partCurrent != null
                           ? `${packLoadStatus.partCurrent} / ${packLoadStatus.partTotal}`
-                          : ""
+                          : ''
                       }
                     />
                   </div>
